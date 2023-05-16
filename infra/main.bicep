@@ -1,87 +1,34 @@
-param nameseed string = 'superapp'
-param location string = resourceGroup().location
-param signedinuser string
+targetScope = 'subscription'
 
-//---------Kubernetes Construction---------
-module aksconst 'core/main.bicep' = {
-  name: 'aksconstruction'
-  params: {
-    location: location
-    resourceName: nameseed
-    enable_aad: true
-    enableAzureRBAC: true
-    registries_sku: 'Standard'
-    omsagent: true
-    retentionInDays: 30
-    agentCount: 2
-    agentVMSize: 'Standard_D2ds_v4'
-    osDiskType: 'Managed'
-    AksPaidSkuForSLA: true
-    networkPolicy: 'azure'
-    networkPluginMode: 'Overlay'
-    azurepolicy: 'audit'
-    acrPushRolePrincipalId: signedinuser
-    adminPrincipalId: signedinuser
-    AksDisableLocalAccounts: true
-    custom_vnet: true
-    upgradeChannel: 'stable'
+@minLength(1)
+@maxLength(17)
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+param name string = 'superapp'
 
-    //Workload Identity requires OidcIssuer to be configured on AKS
-    oidcIssuer: true
+@minLength(1)
+@description('Primary location for all resources')
+param location string
 
-    //We'll also enable the CSI driver for Key Vault
-    keyVaultAksCSI: true
-  }
-}
-output aksOidcIssuerUrl string = aksconst.outputs.aksOidcIssuerUrl
-output aksClusterName string = aksconst.outputs.aksClusterName
+//var resourceToken = '${name}-${toLower(uniqueString(subscription().id, name, location))}'
 
-// deploy keyvault
-module keyVault 'core/keyvault.bicep' = {
-  name: 'kv${nameseed}'
-  params: {
-    resourceName: 'app${nameseed}'
-    keyVaultPurgeProtection: false
-    keyVaultSoftDelete: false
-    location: location
-    privateLinks: false
-  }
-}
-output kvAppName string = keyVault.outputs.keyVaultName
-
-resource superapp 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'id-super'
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: '${name}-rg'
   location: location
-
-  resource fedCreds 'federatedIdentityCredentials' = {
-    name: nameseed
-    properties: {
-      audiences: aksconst.outputs.aksOidcFedIdentityProperties.audiences
-      issuer: aksconst.outputs.aksOidcFedIdentityProperties.issuer
-      subject: 'system:serviceaccount:superapp:serversa'
-    }
-  }
-}
-output idsuperappClientId string = superapp.properties.clientId
-output idsuperappId string = superapp.id
-
-module kvSuperappRbac 'kvRbac.bicep' = {
-  name: 'superappKvRbac'
-  params: {
-    appclientId: superapp.properties.principalId
-    kvName: keyVault.outputs.keyVaultName
+  tags: {
+    'azd-env-name': name
   }
 }
 
-@description('Uses helm to install Workload Identity. This could be done via an AKS property, but is currently in preview.')
-module aadWorkloadId 'workloadId.bicep' = {
-  name: 'aadWorkloadId-helm'
+module resources 'resources.bicep' = {
+  scope: resourceGroup
+  name: 'resources-${name}'
   params: {
-    aksName: aksconst.outputs.aksClusterName
+    signedinuser: ''
     location: location
+    nameseed: name
   }
 }
-
-output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
-output nodeResourceGroup string = aksconst.outputs.aksNodeResourceGroup
-
+// output APP_WEB_BASE_URL string = serviceBusApp.outputs.ApplicationUrl
+// output APPINSIGHTS_INSTRUMENTATIONKEY string = serviceBusApp.outputs.APPINSIGHTS_INSTRUMENTATIONKEY
+// output APPINSIGHTS_CONNECTION_STRING string = serviceBusApp.outputs.APPINSIGHTS_CONNECTION_STRING
+output AZURE_LOCATION string = location
