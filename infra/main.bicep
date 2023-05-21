@@ -1,9 +1,9 @@
 targetScope = 'subscription'
 
-@minLength(1)
-@maxLength(17)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
-param name string = 'aksconstrazd'
+//@minLength(1)
+//@maxLength(17)
+//@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+//param name string = 'aksconstrazd'
 
 @minLength(1)
 @description('Primary location for all resources')
