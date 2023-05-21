@@ -1,3 +1,9 @@
 [submodule "infra/aks-construction"]
 	path = infra/aks-construction
 	url = https://github.com/Azure/AKS-Construction.git
+[submodule "src/api"]
+	path = src/api
+	url = https://github.com/MicrosoftDocs/mslearn-aks-workshop-ratings-api.git
+[submodule "src/web"]
+	path = src/web
+	url = https://github.com/MicrosoftDocs/mslearn-aks-workshop-ratings-web.git
