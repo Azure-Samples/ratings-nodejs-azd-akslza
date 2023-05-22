@@ -1,9 +1,10 @@
 targetScope = 'subscription'
 
-//@minLength(1)
-//@maxLength(17)
-//@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
-//param name string = 'aksconstrazd'
+@minLength(1)
+@maxLength(17)
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+param name string
+
 
 @minLength(1)
 @description('Primary location for all resources')
@@ -32,3 +33,5 @@ module resources 'resources.bicep' = {
 // output APPINSIGHTS_INSTRUMENTATIONKEY string = serviceBusApp.outputs.APPINSIGHTS_INSTRUMENTATIONKEY
 // output APPINSIGHTS_CONNECTION_STRING string = serviceBusApp.outputs.APPINSIGHTS_CONNECTION_STRING
 output AZURE_LOCATION string = location
+// output AZURE_AKS_CLUSTER_NAME string = aksconst.outputs.aksClusterName
+output AZURE_AKS_CLUSTER_NAME string = 'aks-${name}'
