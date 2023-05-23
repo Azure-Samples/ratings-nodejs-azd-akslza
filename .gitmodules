@@ -4,3 +4,6 @@
 [submodule "src/web"]
 	path = src/web
 	url = https://github.com/MicrosoftDocs/mslearn-aks-workshop-ratings-web.git
+[submodule "infra/core"]
+	path = infra/core
+	url = https://github.com/Azure/AKS-Construction.git
