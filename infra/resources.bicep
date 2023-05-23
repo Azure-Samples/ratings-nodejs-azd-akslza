@@ -22,7 +22,7 @@ module aksconst 'core/bicep/main.bicep' = {
     azurepolicy: 'audit'
     acrPushRolePrincipalId: signedinuser
     adminPrincipalId: signedinuser
-    AksDisableLocalAccounts: true
+    AksDisableLocalAccounts: false
     custom_vnet: true
     upgradeChannel: 'stable'
 
