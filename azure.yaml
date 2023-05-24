@@ -24,6 +24,3 @@ services:
       postdeploy:
         shell: sh
         run: azd env set REACT_APP_API_BASE_URL ${SERVICE_API_ENDPOINT_URL}
-      predeploy:
-        shell: sh
-        run: echo "AZURE_CONTAINER_REGISTRY_ENDPOINT=${AZURE_CONTAINER_REGISTRY_ENDPOINT}"

@@ -1,3 +1,4 @@
 .azure
 *.code-workspace
 *.log
+*.swp
