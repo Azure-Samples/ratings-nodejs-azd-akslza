@@ -33,9 +33,7 @@ module aksconst 'core/bicep/main.bicep' = {
     keyVaultAksCSI: true
   }
 }
-output aksOidcIssuerUrl string = aksconst.outputs.aksOidcIssuerUrl
-output aksClusterName string = aksconst.outputs.aksClusterName
-//output AZURE_AKS_CLUSTER_NAME string = aksconst.outputs.aksClusterName
+
 // deploy keyvault
 module keyVault 'core/bicep/keyvault.bicep' = {
   name: 'kv${nameseed}'
@@ -85,4 +83,8 @@ output idsuperappId string = superapp.id
 output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
 output nodeResourceGroup string = aksconst.outputs.aksNodeResourceGroup
 output AZURE_AKS_CLUSTER_NAME string = aksconst.outputs.aksClusterName
+output aksOidcIssuerUrl string = aksconst.outputs.aksOidcIssuerUrl
+output aksClusterName string = aksconst.outputs.aksClusterName
+output containerRegistryName string = aksconst.outputs.containerRegistryName
 
+//output AZURE_AKS_CLUSTER_NAME string = aksconst.outputs.aksClusterName
