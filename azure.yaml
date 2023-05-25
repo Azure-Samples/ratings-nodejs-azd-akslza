@@ -1,14 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: AKSConstructionazd
+name: ratingsapp
 metadata:
-  template: AKSConstructionazd@0.0.1-beta
+  template: ratingsapp@0.0.1-beta
 services:
   web:
     project: ./src/web
     dist: build
     language: js
     host: aks
+    k8s:
+      deploymentPath: ../manifests/web
     hooks:
       postdeploy:
         shell: sh
@@ -18,6 +20,7 @@ services:
     language: js
     host: aks
     k8s:
+      deploymentPath: ../manifests/api
       ingress:
         relativePath: api
     hooks:
