@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: ratingsapp
+metadata:
+  template: ratingsapp@0.0.1-beta
+services:
+  api:
+    project: ./src/api
+    language: js
+    host: aks
+    k8s:
+      deploymentPath: ../manifests/api
+      ingress:
+        relativePath: api
+    hooks:
+      predeploy:
+        shell: sh
+        run: az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --admin --context ${AZURE_AKS_CLUSTER_NAME} --file ~/.kube/${AZURE_AKS_CLUSTER_NAME} 
+# azd env set KUBECONFIG  ${HOME}/.kube/config:${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+# helm repo add bitnami https://charts.bitnami.com/bitnami && helm install ratings bitnami/mongodb --namespace ratingsapp --set auth.username=fred,auth.password=fred,auth.database=ratingsdb 
+      postdeploy:
+        shell: sh
+        run: azd env set REACT_APP_API_BASE_URL ${SERVICE_API_ENDPOINT_URL}
+  web:
+    project: ./src/web
+    dist: build
+    language: js
+    host: aks
+    k8s:
+      deploymentPath: ../manifests/web
+    hooks:
+      postdeploy:
+        shell: sh
+        run: azd env set REACT_APP_WEB_BASE_URL ${SERVICE_WEB_ENDPOINT_URL}        
