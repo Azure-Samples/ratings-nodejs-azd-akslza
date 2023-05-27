@@ -1,0 +1,44 @@
+# Before this deployment, ensure that MongoDB has been created using Helm.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings-api
+spec:
+  selector:
+    matchLabels:
+      app: ratings-api
+  template:
+    metadata:
+      labels:
+        app: ratings-api # the label for the pods and the deployments
+    spec:
+      containers:
+      - name: ratings-api
+        image: ${SERVICE_API_IMAGE_NAME}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000 # the application listens to this port
+        env:
+        - name: MONGODB_URI # the application expects to find the MongoDB connection details in this environment variable
+          value: mongodb://root:mongo@ratings-mongodb.ratingsapp.svc.cluster.local
+        - name: MONGODB_ROOT_PASSWORD
+          value: mongo
+        resources:
+          requests: # minimum resources required
+            cpu: 250m
+            memory: 64Mi
+          limits: # maximum resources allocated
+            cpu: 250m
+            memory: 256Mi
+        readinessProbe: # is the container ready to receive traffic?
+          initialDelaySeconds: 10
+          httpGet:
+            port: 3000
+            path: /healthz
+        livenessProbe: # is the container healthy?
+          initialDelaySeconds: 2
+          periodSeconds: 5
+          httpGet:
+            port: 3000
+            path: /healthz
