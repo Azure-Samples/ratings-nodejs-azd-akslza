@@ -23,5 +23,9 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install ratings bitnami/mongodb --namespace ratingsapp --create-namespace --set image.tag=5.0.14-debian-11-r9,auth.rootPassword=mongo,auth.username=mongo,auth.password=mongo,auth.database=ratingsdb
 azd deploy --debug
 
+# get the External IP address with 
+kubectl get svc -n ratingsappp ratings-web
+
 ```
+Now open up a web brower to the external ip address from the last step
 
