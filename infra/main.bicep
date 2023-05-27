@@ -36,3 +36,4 @@ output AZURE_LOCATION string = location
 output AZURE_AKS_CLUSTER_NAME string = resources.outputs.aksClusterName
 //output AZURE_AKS_CLUSTER_NAME string = 'aks-${name}'
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = '${resources.outputs.containerRegistryName}.azurecr.io'
+output AZURE_RESOURCE_GROUP string = '${name}-rg'
