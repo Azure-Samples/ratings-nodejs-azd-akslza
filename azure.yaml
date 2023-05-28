@@ -3,6 +3,9 @@
 name: ratingsapp
 metadata:
   template: ratingsapp@0.0.1-beta
+hooks:
+  predeploy: 
+    run: ./hooks/predeploy.sh
 services:
   api:
     project: ./src/api
