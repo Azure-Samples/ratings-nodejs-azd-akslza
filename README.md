@@ -19,6 +19,12 @@ azd up
 
 Now open up a web brower to the external ip address from the last step
 
+# Deleting Everything
+In order to clean up all resources run:
+```
+azd down --no-prompt
+```
+
 | Issues that need to be fixed: |
 |:---------------------------|
 | AKS using local admin account |
