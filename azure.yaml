@@ -4,8 +4,15 @@ name: ratingsapp
 metadata:
   template: ratingsapp@0.0.1-beta
 hooks:
+  postprovision: 
+    run: ./hooks/postprovision.sh
   predeploy: 
     run: ./hooks/predeploy.sh
+  postdeploy: 
+    interactive: true
+    run: ./hooks/postdeploy.sh
+  postdown: 
+    run: ./hooks/postdown.sh
 services:
   api:
     project: ./src/api
@@ -13,8 +20,6 @@ services:
     host: aks
     k8s:
       deploymentPath: ../manifests/api
-      ingress:
-        relativePath: api
     hooks:
       postdeploy:
         shell: sh
