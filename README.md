@@ -6,6 +6,8 @@ Accelerate your onboarding to AKS with; Helper Web App, bicep templating and CI/
 | Make sure to remove previous cluster configuration with the same name from your .kube files |
 | Make sure that your name for the infrastructure is lower case  |
 
+Full deployment of the system and applications takes approximately 12 minutes
+
 git clone this repo and then run the following commands
 ```
 git submodule init 
