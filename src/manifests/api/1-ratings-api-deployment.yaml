@@ -21,9 +21,9 @@ spec:
         - containerPort: 3000 # the application listens to this port
         env:
         - name: MONGODB_URI # the application expects to find the MongoDB connection details in this environment variable
-          value: mongodb://root:mongo@ratings-mongodb.ratingsapp.svc.cluster.local
+          value: ${MONGODB_URI}
         - name: MONGODB_ROOT_PASSWORD
-          value: mongo
+          value: ${MONGODB_ROOT_PASSWORD}
         resources:
           requests: # minimum resources required
             cpu: 250m
