@@ -1,7 +1,7 @@
 # AKS-Construction-azd
 Accelerate your onboarding to AKS with; Helper Web App, bicep templating and CI/CD samples. Flexible &amp; secure AKS baseline implementations in a Microsoft + community maintained reference implementation.
 
-| ⚠️: WARNING              |
+| ⚠️ WARNING              |
 |:---------------------------|
 | Make sure to remove previous cluster configuration with the same name from your .kube files |
 | Make sure that your name for the infrastructure is lower case  |
