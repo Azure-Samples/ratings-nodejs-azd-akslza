@@ -14,6 +14,7 @@ git submodule init
 git submodule update
 azd auth login
 azd init
+unset KUBECONFIG
 azd up
 ```
 
