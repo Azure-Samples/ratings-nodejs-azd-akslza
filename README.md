@@ -1,4 +1,4 @@
-# AKS-Construction-azd
+# AKS Landing Zone Accelerator on Azure Developer CLI (AZD)
 Accelerate your onboarding to AKS with; Helper Web App, bicep templating and CI/CD samples. Flexible &amp; secure AKS baseline implementations in a Microsoft + community maintained reference implementation.
 
 | ⚠️ WARNING              |
