@@ -28,6 +28,7 @@ module aksconst 'core/bicep/main.bicep' = {
 
     //Workload Identity requires OidcIssuer to be configured on AKS
     oidcIssuer: true
+    workloadIdentity: true
 
     //We'll also enable the CSI driver for Key Vault
     keyVaultAksCSI: true
@@ -56,20 +57,20 @@ resource superapp 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-p
     properties: {
       audiences: aksconst.outputs.aksOidcFedIdentityProperties.audiences
       issuer: aksconst.outputs.aksOidcFedIdentityProperties.issuer
-      subject: 'system:serviceaccount:superapp:serversa'
+      subject: 'system:serviceaccount:ratingsapp:workload-sa'
     }
   }
 }
 output idsuperappClientId string = superapp.properties.clientId
 output idsuperappId string = superapp.id
 
-// module kvSuperappRbac 'kvRbac.bicep' = {
-//   name: 'superappKvRbac'
-//   params: {
-//     appclientId: superapp.properties.principalId
-//     kvName: keyVault.outputs.keyVaultName
-//   }
-// }
+module kvSuperappRbac 'kvRbac.bicep' = {
+  name: 'superappKvRbac'
+  params: {
+    appclientId: superapp.properties.principalId
+    kvName: keyVault.outputs.keyVaultName
+  }
+}
 
 // @description('Uses helm to install Workload Identity. This could be done via an AKS property, but is currently in preview.')
 // module aadWorkloadId 'workloadId.bicep' = {
@@ -87,4 +88,4 @@ output aksOidcIssuerUrl string = aksconst.outputs.aksOidcIssuerUrl
 output aksClusterName string = aksconst.outputs.aksClusterName
 output containerRegistryName string = aksconst.outputs.containerRegistryName
 
-//output AZURE_AKS_CLUSTER_NAME string = aksconst.outputs.aksClusterName
+
