@@ -10,9 +10,9 @@ export MONGODB_URI="mongodb://root:${MONGODB_ROOT_PASSWORD}@ratings-mongodb.rati
 
 az keyvault secret set --name mongodburi --vault-name ${AZURE_KEY_VAULT_NAME} --value "${MONGODB_URI}"
 
-# if ! kubectl get namespaces|grep ${NAMESPACE}; then
-#    kubectl create namespace ${NAMESPACE}
-# fi
+if ! kubectl get namespaces|grep ${NAMESPACE}; then
+   kubectl create namespace ${NAMESPACE}
+fi
 # if kubectl get secret -n ${NAMESPACE} ratings-mongodb; then
 #    kubectl delete secret -n ${NAMESPACE} ratings-mongodb
 # fi 
