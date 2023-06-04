@@ -23,3 +23,11 @@ resource postgressecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' =
     value: 'PgPassword'
   }
 }
+
+resource mongodbURL 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: kv
+  name: 'mongodburi'
+  properties: {
+    value: 'mongodb://root:mongo@ratings-mongodb.ratingsapp.svc.cluster.local'
+  }
+}

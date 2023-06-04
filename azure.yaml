@@ -4,6 +4,8 @@ name: ratingsapp
 metadata:
   template: ratingsapp@0.0.1-beta
 hooks:
+  preprovision: 
+    run: ./hooks/preprovision.sh
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 

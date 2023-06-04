@@ -8,7 +8,7 @@ export MONGODB_ROOT_PASSWORD=mongo
 export NAMESPACE=ratingsapp
 export MONGODB_URI="mongodb://root:${MONGODB_ROOT_PASSWORD}@ratings-mongodb.ratingsapp.svc.cluster.local"
 
-az keyvault secret set --name mongodburi --vault-name ${AZURE_KEY_VAULT_NAME} --value "${MONGODB_URI}"
+# az keyvault secret set --name mongodburi --vault-name ${AZURE_KEY_VAULT_NAME} --value "${MONGODB_URI}"
 
 if ! kubectl get namespaces|grep ${NAMESPACE}; then
    kubectl create namespace ${NAMESPACE}
