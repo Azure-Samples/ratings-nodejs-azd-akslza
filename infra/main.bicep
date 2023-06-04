@@ -37,3 +37,6 @@ output AZURE_AKS_CLUSTER_NAME string = resources.outputs.aksClusterName
 output AZURE_CONTAINER_REGISTRY string = resources.outputs.containerRegistryName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = '${resources.outputs.containerRegistryName}.azurecr.io'
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+output AZURE_TENANT_ID string = subscription().tenantId
+output AZURE_KEY_VAULT_NAME string = resources.outputs.kvAppName
+output AZURE_APP_MSI string = resources.outputs.idsuperappClientId

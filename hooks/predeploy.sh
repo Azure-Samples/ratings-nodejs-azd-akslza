@@ -7,13 +7,16 @@ az acr import --name ${AZURE_CONTAINER_REGISTRY} --source docker.io/bitnami/mong
 export MONGODB_ROOT_PASSWORD=mongo
 export NAMESPACE=ratingsapp
 export MONGODB_URI="mongodb://root:${MONGODB_ROOT_PASSWORD}@ratings-mongodb.ratingsapp.svc.cluster.local"
+
+# az keyvault secret set --name mongodburi --vault-name ${AZURE_KEY_VAULT_NAME} --value "${MONGODB_URI}"
+
 if ! kubectl get namespaces|grep ${NAMESPACE}; then
    kubectl create namespace ${NAMESPACE}
 fi
-if kubectl get secret -n ${NAMESPACE} ratings-mongodb; then
-   kubectl delete secret -n ${NAMESPACE} ratings-mongodb
-fi 
-kubectl create secret generic -n ${NAMESPACE} ratings-mongodb --from-literal=mongodb-root-password=${MONGODB_ROOT_PASSWORD} --from-literal=mongodb-passwords=${MONGODB_ROOT_PASSWORD}
+# if kubectl get secret -n ${NAMESPACE} ratings-mongodb; then
+#    kubectl delete secret -n ${NAMESPACE} ratings-mongodb
+# fi 
+# kubectl create secret generic -n ${NAMESPACE} ratings-mongodb --from-literal=mongodb-root-password=${MONGODB_ROOT_PASSWORD} --from-literal=mongodb-passwords=${MONGODB_ROOT_PASSWORD}
 
 kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
 
