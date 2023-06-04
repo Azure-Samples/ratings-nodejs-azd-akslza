@@ -6,6 +6,10 @@ Accelerate your onboarding to AKS with the Azure develper CLI and AKS landing zo
 | Infrastructure name| Make sure that your name for the infrastructure is lower case  |
 | KUBECONFIG | Make sure to remove previous cluster configuration with the same name from your .kube files and unset your KUBECONFIG variable.  During the deployment phase azd will use any KUBECONFIG environment variable and your default ~/.kube/config for both the cluster named in the infrastructure name (aks-${AZURE_INFRA_NAME}) as well as looking for a context of the same name.  If an alternate is set in your environment then the deployment step will attempt to use it.|
 
+
+=======
+
+
 Full deployment of the system and applications takes approximately 12 minutes
 
 git clone this repo and then run the following commands
@@ -27,3 +31,4 @@ azd down --no-prompt
 ```
 
 
+=======
