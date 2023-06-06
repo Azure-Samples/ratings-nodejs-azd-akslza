@@ -1,4 +1,6 @@
 #!/bin/bash
 source .azure/${AZURE_ENV_NAME}/.env
 
-kubectl config unset clusters.${AZURE_AKS_CLUSTER_NAME}
+if [ -f "${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}" ]; then
+   rm ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+fi

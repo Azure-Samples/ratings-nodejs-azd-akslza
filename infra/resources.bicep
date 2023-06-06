@@ -72,14 +72,6 @@ module kvSuperappRbac 'kvRbac.bicep' = {
   }
 }
 
-// @description('Uses helm to install Workload Identity. This could be done via an AKS property, but is currently in preview.')
-// module aadWorkloadId 'workloadId.bicep' = {
-//   name: 'aadWorkloadId-helm'
-//   params: {
-//     aksName: aksconst.outputs.aksClusterName
-//     location: location
-//   }
-// }
 
 output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
 output nodeResourceGroup string = aksconst.outputs.aksNodeResourceGroup

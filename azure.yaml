@@ -9,10 +9,13 @@ hooks:
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 
+    interactive: true
     run: ./hooks/predeploy.sh
   postdeploy: 
     interactive: true
     run: ./hooks/postdeploy.sh
+  predown: 
+    run: ./hooks/predown.sh
   postdown: 
     run: ./hooks/postdown.sh
 services:
