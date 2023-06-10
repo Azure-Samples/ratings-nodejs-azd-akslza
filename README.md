@@ -8,6 +8,7 @@ The following prerequisites are required to use this application. Please ensure 
 - [Kubernetes CLI (kubectl)](https://kubernetes.io/docs/tasks/tools/)
 - [Docker](https://docs.docker.com/desktop/) - for building application images
 - [kubelogin](https://github.com/Azure/kubelogin)
+- [jq](https://jqlang.github.io/jq/download/)
 
 This application utilizes the following Azure resources:
 
@@ -19,6 +20,7 @@ This application utilizes the following Azure resources:
 
 | |⚠️ WARNING |
 |:----|:---|
+| SSL Certificate | Upon navigating to your new FQDN you will see you receive a certificate warning because it is not a production certificate. Using LetsEncrypt staging certificates for your Application Gateway/Ingress Controller is only advised for non-production environments. If you are using Ingress Controllers in your production workloads, we recommend you to purchase a paid TLS certificate. |
 | Infrastructure name| Make sure that your name for the infrastructure is lower case  |
 | KUBECONFIG | Make sure to remove previous cluster configuration with the same name from your .kube files and unset your KUBECONFIG variable.  During the deployment phase azd will use any KUBECONFIG environment variable and your default ~/.kube/config for both the cluster named in the infrastructure name (aks-${AZURE_INFRA_NAME}) as well as looking for a context of the same name.  If an alternate is set in your environment then the deployment step will attempt to use it.|
 
@@ -34,12 +36,12 @@ azd init
 azd up
 ```
 
-Now open up a web brower to the external ip address from the last step
+Now open up a web brower to the external url provided from the last step
 
 # Deleting Everything
 In order to clean up all resources run:
 ```
-azd down --no-prompt
+azd down
 ```
 
 
