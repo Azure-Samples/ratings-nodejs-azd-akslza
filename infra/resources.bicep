@@ -18,7 +18,7 @@ module aksconst 'core/bicep/main.bicep' = {
     osDiskType: 'Managed'
     AksPaidSkuForSLA: true
     networkPolicy: 'azure'
-    networkPluginMode: 'Overlay'
+//    networkPluginMode: 'Overlay'
     azurepolicy: 'audit'
     acrPushRolePrincipalId: signedinuser
     adminPrincipalId: signedinuser
@@ -32,6 +32,13 @@ module aksconst 'core/bicep/main.bicep' = {
 
     //We'll also enable the CSI driver for Key Vault
     keyVaultAksCSI: true
+
+    // enable app gateway
+    ingressApplicationGateway: true 
+    appGWcount: 1
+    appGWsku: 'WAF_v2'
+    appGWmaxCount: 10
+    appgwKVIntegration: true
   }
 }
 
@@ -71,15 +78,6 @@ module kvSuperappRbac 'kvRbac.bicep' = {
     kvName: keyVault.outputs.keyVaultName
   }
 }
-
-// @description('Uses helm to install Workload Identity. This could be done via an AKS property, but is currently in preview.')
-// module aadWorkloadId 'workloadId.bicep' = {
-//   name: 'aadWorkloadId-helm'
-//   params: {
-//     aksName: aksconst.outputs.aksClusterName
-//     location: location
-//   }
-// }
 
 output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
 output nodeResourceGroup string = aksconst.outputs.aksNodeResourceGroup
