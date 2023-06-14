@@ -5,11 +5,11 @@ export NAMESPACE=ratingsapp
 
 docker rmi ${SERVICE_API_IMAGE_NAME}
 docker rmi ${SERVICE_WEB_IMAGE_NAME}
-cat ./src/manifests/misc/5-https-ratings-web-ingress.yaml |sed -e "s/\${AZURE_DNS_LABEL}/${AZURE_DNS_LABEL}/g" \
-    -e  "s/\${AZURE_LOCATION}/${AZURE_LOCATION}/g"| kubectl apply -n ${NAMESPACE} -f -
+# cat ./src/manifests/misc/5-https-ratings-web-ingress.yaml |sed -e "s/\${AZURE_DNS_LABEL}/${AZURE_DNS_LABEL}/g" \
+#     -e  "s/\${AZURE_LOCATION}/${AZURE_LOCATION}/g"| kubectl apply -n ${NAMESPACE} -f -
 
 INGRESS_IP=$(kubectl get ingress -n ${NAMESPACE} ratings-web-https -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-PIP_NAME=$(az network application-gateway show -g cqtst15-rg -n agw-cqtst15 --query "frontendIPConfigurations[].publicIPAddress[].id" -o tsv|sed 's/\/.*\///g')
+PIP_NAME=$(az network application-gateway show -g ${AZURE_RESOURCE_GROUP} -n ${AZURE_APP_GATEWAY_NAME} --query "frontendIPConfigurations[].publicIPAddress[].id" -o tsv|sed 's/\/.*\///g')
 
 az network public-ip update -g ${AZURE_RESOURCE_GROUP} -n $PIP_NAME --dns-name ${AZURE_DNS_LABEL}
 

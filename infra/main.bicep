@@ -40,3 +40,4 @@ output AZURE_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_TENANT_ID string = subscription().tenantId
 output AZURE_KEY_VAULT_NAME string = resources.outputs.kvAppName
 output AZURE_APP_MSI string = resources.outputs.idsuperappClientId
+output AZURE_APP_GATEWAY_NAME string = resources.outputs.AZURE_APP_GATEWAY_NAME
