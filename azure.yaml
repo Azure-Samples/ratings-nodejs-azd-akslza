@@ -7,6 +7,7 @@ hooks:
   preprovision: 
     shell: sh
     interactive: true
+    continueOnError: true
     run: ./hooks/preprovision.sh
   postprovision: 
     run: ./hooks/postprovision.sh
