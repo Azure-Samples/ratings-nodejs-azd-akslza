@@ -1,5 +1,5 @@
 ###   #!/bin/sh
-echo "Prior to source"
+# echo "Prior to source"
 # source .azure/${AZURE_ENV_NAME}/.env
 # echo "after source"
 # if ! [ -z "${AZURE_INFRA_NAME}"]; then
