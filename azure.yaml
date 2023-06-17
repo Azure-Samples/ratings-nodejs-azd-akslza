@@ -5,6 +5,8 @@ metadata:
   template: LZA-ratingsapp@0.0.1-beta
 hooks:
   preprovision: 
+    shell: sh
+    interactive: true
     run: ./hooks/preprovision.sh
   postprovision: 
     run: ./hooks/postprovision.sh
