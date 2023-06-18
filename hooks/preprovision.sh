@@ -1,6 +1,5 @@
 #!/bin/bash
 source .azure/${AZURE_ENV_NAME}/.env
-apt update && apt -y install jq
 
 AZURE_INFRA_NAME=$(cat .azure/dev/config.json |jq -c '.infra.parameters.name'|tr -d \")
 
