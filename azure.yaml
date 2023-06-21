@@ -8,7 +8,10 @@ hooks:
     shell: sh
     interactive: true
     continueOnError: true
-    run: ./hooks/preprovision.sh
+    # run: ./hooks/preprovision.sh
+    run: |
+      source .azure/${AZURE_ENV_NAME}/.env
+      echo "hello world"
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 
