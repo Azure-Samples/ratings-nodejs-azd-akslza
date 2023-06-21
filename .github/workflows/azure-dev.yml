@@ -26,6 +26,7 @@ jobs:
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -59,6 +60,7 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
 
       - name: Deploy Application
         run: azd deploy --no-prompt
