@@ -1,5 +1,4 @@
 #!/bin/bash
-source .azure/${AZURE_ENV_NAME}/.env
 
 if kubectl config get-contexts ${AZURE_AKS_CLUSTER_NAME} -o name 2>&1| grep ${AZURE_AKS_CLUSTER_NAME}; then
    echo "Remove previous kubeconfig context ${AZURE_AKS_CLUSTER_NAME}"

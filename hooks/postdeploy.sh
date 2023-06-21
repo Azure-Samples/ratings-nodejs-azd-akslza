@@ -1,6 +1,4 @@
 #!/bin/bash
-source .azure/${AZURE_ENV_NAME}/.env
-
 export NAMESPACE=ratingsapp
 
 docker rmi ${SERVICE_API_IMAGE_NAME}

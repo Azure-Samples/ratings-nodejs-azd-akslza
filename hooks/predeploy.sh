@@ -1,5 +1,4 @@
 #!/bin/bash
-source .azure/${AZURE_ENV_NAME}/.env
 
 if [[ -z "${AZURE_DNS_LABEL}" ]]; then
    read -p "Please provide dns label for application (this will be prepended to .${AZURE_LOCATION}.cloudapp.azure.com):" AZURE_DNS_LABEL
