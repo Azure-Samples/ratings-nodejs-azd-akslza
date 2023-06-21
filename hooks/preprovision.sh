@@ -1,7 +1,6 @@
 #!/bin/bash
+. .azure/${AZURE_ENV_NAME}/.env
 echo "hello world"
-
-#source .azure/${AZURE_ENV_NAME}/.env
 
 # AZURE_INFRA_NAME=$(cat .azure/dev/config.json |jq -c '.infra.parameters.name'|tr -d \")
 
