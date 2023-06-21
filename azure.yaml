@@ -10,7 +10,7 @@ hooks:
     continueOnError: true
     # run: ./hooks/preprovision.sh
     run: |
-      source .azure/${AZURE_ENV_NAME}/.env
+      . .azure/${AZURE_ENV_NAME}/.env
       echo "hello world"
   postprovision: 
     run: ./hooks/postprovision.sh
