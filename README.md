@@ -48,25 +48,29 @@ azd down
 ```
 
 
+
 # Deploy with github actions
 To deploy with github actions run the following steps:
-Note: Full deployment of the system and applications takes approximately 12 minutes
+Note: Full deployment of the system and applications can take over 15 minutes
 
-git clone this repo, cd into the repo directory and then run the following commands
+run the following from bash or windows to set up the credentials for github
 ```
-unset KUBECONFIG
-git submodule init 
-git submodule update
-azd auth login
-azd init
-azd up
+azd pipeline config --principal-name <desired principal name>
 ```
+* Go to [Azure AD App Registrations](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps) and search for the principal name you used in the last step.  Make sure to turn off any filters in order to find it.
+* Select the App Registration 
+* Select the Certificates & secrets blade
+* Select the Federated credentials tab
+![AppReg](assets/AADAppRegUpdate.jpg)
+* Copy the credentials for the main branch for your branch name
 
-Now wait a few minutes for the ingress and dns to establish and then open up a web browser to the external url provided from the last step
+* Go to the github Actions variables and make sure you provide the following variables:
+** AZURE_DNS_LABEL - the short label to use for dns which will be ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
+** AZURE_EMAIL_ADDRESS - a valid email address must be provided for the staging certificate from LetsEncrypt
+** AZURE_ENV_NAME - an enviroment name (such as dev, test, prod) for this deployment
+** AZURE_INFRA_NAME - a name seed for the infrastructure, which will result in names such as ${AZURE_INFRA_NAME}-rg or aks-{$AZURE_INFRA_NAME}
+** AZURE_LOCATION - the azure location for deployment such as eastus or centralus
 
-## Deleting Everything
-In order to clean up all resources run:
-```
-azd down
-```
+Also ensure that the AZURE_CLIENT_ID, AZURE_SUBSCRIPTION_ID and AZURE_TENANT_ID has been set by the "azd pipeline config" step.
+
 
