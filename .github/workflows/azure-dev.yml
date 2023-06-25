@@ -1,5 +1,20 @@
 on:
   workflow_dispatch:
+    # inputs:
+    #   AZURE_LOCATION:
+    #     description: 'The location for deployment (ie eastus or centralus)'
+    #     required: true
+    #     type: string
+    #   AZURE_ENV_NAME:
+    #     description: 'The Azure environment (ie dev, test, prod)'
+    #     required: false
+    #     type: string
+    #     default: 'dev'
+    #   AZURE_INFRA_NAME:
+    #     description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
+    #     required: true
+    #     type: string
+
 
 #   push:
 #     # Run when commits are pushed to mainline branch (main or master)
@@ -13,6 +28,8 @@ on:
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+
+
 permissions:
   id-token: write
   contents: read
