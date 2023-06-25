@@ -65,11 +65,11 @@ azd pipeline config --principal-name <desired principal name>
 * Copy the credentials for the main branch for your branch name
 
 * Go to the github Actions variables and make sure you provide the following variables:
-** AZURE_DNS_LABEL - the short label to use for dns which will be ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
-** AZURE_EMAIL_ADDRESS - a valid email address must be provided for the staging certificate from LetsEncrypt
-** AZURE_ENV_NAME - an enviroment name (such as dev, test, prod) for this deployment
-** AZURE_INFRA_NAME - a name seed for the infrastructure, which will result in names such as ${AZURE_INFRA_NAME}-rg or aks-{$AZURE_INFRA_NAME}
-** AZURE_LOCATION - the azure location for deployment such as eastus or centralus
+    * AZURE_DNS_LABEL - the short label to use for dns which will be ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
+    * AZURE_EMAIL_ADDRESS - a valid email address must be provided for the staging certificate from LetsEncrypt
+    * AZURE_ENV_NAME - an enviroment name (such as dev, test, prod) for this deployment
+    * AZURE_INFRA_NAME - a name seed for the infrastructure, which will result in names such as ${AZURE_INFRA_NAME}-rg or aks-${AZURE_INFRA_NAME}
+    * AZURE_LOCATION - the azure location for deployment such as eastus or centralus
 
 Also ensure that the AZURE_CLIENT_ID, AZURE_SUBSCRIPTION_ID and AZURE_TENANT_ID has been set by the "azd pipeline config" step.
 
