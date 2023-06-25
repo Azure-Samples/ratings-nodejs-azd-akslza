@@ -27,12 +27,12 @@ if kubectl get ns 2>&1 | grep 'no such host'; then
 fi
 
 
-az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --file=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
-chmod 600 ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+# az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --file=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
+# chmod 600 ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
 az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
-chmod 600 ${HOME}/.kube/config
-azd env set KUBECONFIG ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
-export KUBECONFIG=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+# chmod 600 ${HOME}/.kube/config
+# azd env set KUBECONFIG ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+# export KUBECONFIG=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
 
 
 export NAMESPACE=ratingsapp
