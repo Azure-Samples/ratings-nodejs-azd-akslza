@@ -4,14 +4,14 @@ name: ratingsapp
 metadata:
   template: LZA-ratingsapp@0.0.1-beta
 hooks:
-  preprovision: 
-    shell: sh
-    interactive: true
-    continueOnError: true
-    # run: ./hooks/preprovision.sh
-    run: |
-      ls -al ./hooks
-      echo "hello world"
+  # preprovision: 
+  #   shell: sh
+  #   interactive: true
+  #   continueOnError: true
+  #   # run: ./hooks/preprovision.sh
+  #   run: |
+  #     ls -al ./hooks
+  #     echo "hello world"
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 
