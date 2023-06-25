@@ -19,8 +19,6 @@ hooks:
     continueOnError: true
     interactive: true
     run: |
-      echo "Contents of ~/.kube"
-      ls -al ~/.kube
       echo "Run get-creds"
       echo "vars rg: ${AZURE_RESOURCE_GROUP} aks: ${AZURE_AKS_CLUSTER_NAME}"
       az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
