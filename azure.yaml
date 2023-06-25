@@ -15,6 +15,8 @@ hooks:
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 
+    shell: sh
+    continueOnError: true
     interactive: true
     run: |
       echo "Contents of ~/.kube"
