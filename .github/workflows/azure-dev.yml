@@ -85,9 +85,20 @@ jobs:
       # set up kubectl
       - name: GetEnvironment
         run: |
-          echo "ENV is ${AZURE_ENV_NAME}"
-          cat .azure/${AZURE_ENV_NAME}/.env >>  $GITHUB_ENV
-          echo "$GITHUB_ENV"
+          echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
+          . .azure/${{ vars.AZURE_ENV_NAME }}/.env 
+          echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY=${AZURE_CONTAINER_REGISTRY}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY_ENDPOINT=${AZURE_CONTAINER_REGISTRY_ENDPOINT}" >> $GITHUB_ENV
+          echo "AZURE_DNS_LABEL=${AZURE_DNS_LABEL}" >> $GITHUB_ENV
+          echo "AZURE_EMAIL_ADDRESS=${AZURE_EMAIL_ADDRESS}" >> $GITHUB_ENV
+          echo "AZURE_KEY_VAULT_NAME=${AZURE_KEY_VAULT_NAME}" >> $GITHUB_ENV
+          echo "AZURE_LOCATION=${AZURE_LOCATION}" >> $GITHUB_ENV
+          echo "AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" >> $GITHUB_ENV
+          echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
       - name: Azure login
         id: login
         uses: azure/login@v1
