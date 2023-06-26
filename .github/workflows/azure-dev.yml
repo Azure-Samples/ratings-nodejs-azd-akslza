@@ -106,15 +106,9 @@ jobs:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      # - name: Set AKS context
-      #   id: set-context
-      #   uses: azure/aks-set-context@v3
-      #   with:
-      #     resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
-      #     cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
-      # - name: Setup kubectl
-      #   id: install-kubectl
-      #   uses: azure/setup-kubectl@v3
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
       - name: Kubelogin
         env:
           kubeloginversion: 'v0.0.28'
@@ -126,7 +120,13 @@ jobs:
           # sudo mv bin/linux_amd64/kubelogin /usr/bin
           mv bin/linux_amd64/kubelogin /usr/bin
           kubelogin convert-kubeconfig -l azurecli
-
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
+  
       - name: Deploy Mongo to AKS
         id: deploy-aks-mongo
         uses: Azure/k8s-deploy@v4
