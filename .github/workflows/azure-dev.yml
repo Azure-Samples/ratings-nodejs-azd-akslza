@@ -116,15 +116,15 @@ jobs:
       #   id: install-kubectl
       #   uses: azure/setup-kubectl@v3
       - name: Kubelogin
-      env:
-        kubeloginversion: 'v0.0.28'
-      run: |
-        az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing
+        env:
+          kubeloginversion: 'v0.0.28'
+        run: |
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing
 
-        wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
-        unzip kubelogin-linux-amd64.zip
-        sudo mv bin/linux_amd64/kubelogin /usr/bin
-        kubelogin convert-kubeconfig -l azurecli
+          wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
+          unzip kubelogin-linux-amd64.zip
+          sudo mv bin/linux_amd64/kubelogin /usr/bin
+          kubelogin convert-kubeconfig -l azurecli
 
       - name: Deploy Mongo to AKS
         id: deploy-aks-mongo
