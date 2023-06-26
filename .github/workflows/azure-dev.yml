@@ -99,8 +99,8 @@ jobs:
         id: set-context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: "${{ env.AZURE_RESOURCE_GROUP }}" 
-          cluster-name: "${{ env.AZURE_AKS_CLUSTER_NAME }}"
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
