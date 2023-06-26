@@ -83,11 +83,9 @@ jobs:
 
       #############################################################################
       # set up kubectl
-      - name: Get Environment
+      - name: GetEnvironment
         run: |
-          . .azure/dev/.env
-          echo "AKS $Env.AZURE_AKS_CLUSTER_NAME or ${AZURE_AKS_CLUSTER_NAME}"
-
+          cat .azure/${AZURE_ENV_NAME}/.env >>  $GITHUB_ENV
       - name: Azure login
         id: login
         uses: azure/login@v1
@@ -99,8 +97,8 @@ jobs:
         id: set-context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: "$Env.AZURE_RESOURCE_GROUP" 
-          cluster-name: "$Env.AZURE_AKS_CLUSTER_NAME"
+          resource-group: "${{ env.AZURE_RESOURCE_GROUP }}" 
+          cluster-name: "${{ env.AZURE_AKS_CLUSTER_NAME }}"
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
