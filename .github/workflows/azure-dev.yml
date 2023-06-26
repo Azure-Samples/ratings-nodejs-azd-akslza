@@ -40,12 +40,12 @@ jobs:
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
-      environment: cset
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
