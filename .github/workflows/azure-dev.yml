@@ -85,7 +85,9 @@ jobs:
       # set up kubectl
       - name: GetEnvironment
         run: |
+          echo "ENV is ${AZURE_ENV_NAME}"
           cat .azure/${AZURE_ENV_NAME}/.env >>  $GITHUB_ENV
+          echo "$GITHUB_ENV"
       - name: Azure login
         id: login
         uses: azure/login@v1
