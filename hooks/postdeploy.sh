@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# check to see if this is running as github action
+if [[ ! -z "$CI" ]]; then
+   echo "Running on github, skipping postdeploy hook. Exiting."
+   exit
+fi
+
 export NAMESPACE=ratingsapp
 
 docker rmi ${SERVICE_API_IMAGE_NAME}

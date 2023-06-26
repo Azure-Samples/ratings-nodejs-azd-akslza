@@ -81,6 +81,43 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
 
+      #############################################################################
+      # set up kubectl
+      - name: Azure login
+        id: login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ secrets.AZURE_RESOURCE_GROUP }}' 
+          cluster-name: '${{ secrets.AZURE_AKS_CLUSTER_NAME }}'
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Deploy Mongo to AKS
+        id: deploy-aks-mongo
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'ratingsapp'
+          manifests: |
+             ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          images: 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9 '
+          pull-images: false 
+      - name: Deploy Cert Manager to AKS
+        id: deploy-aks-cert-manager
+        uses: Azure/k8s-deploy@v4
+        with:
+          manifests: |
+             ./src/manifests/cert-manager/cert-manager.yaml
+        
+      # docker.io/bitnami/mongodb:5.0.14-debian-11-r9    
+      # ./src/manifests/cert-manager/cert-manager.yaml
+      # images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
+      #############################################################################
+
       - name: Deploy Application
         run: azd deploy --no-prompt
         env:

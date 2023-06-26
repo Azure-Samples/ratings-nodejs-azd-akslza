@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# check to see if this is running as github action
+if [[ ! -z "$CI" ]]; then
+   echo "Running on github, skipping predeploy hook. Exiting."
+   exit
+fi
+
 if [[ -z "${AZURE_DNS_LABEL}" ]]; then
    read -p "Please provide dns label for application (this will be prepended to .${AZURE_LOCATION}.cloudapp.azure.com):" AZURE_DNS_LABEL
    if [[ ${AZURE_DNS_LABEL} == *"."* ]]; then
