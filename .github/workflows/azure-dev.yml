@@ -83,6 +83,11 @@ jobs:
 
       #############################################################################
       # set up kubectl
+      - name: Check Environment
+        run: |
+          echo "RG $Env.AZURE_RESOURCE_GROUP or ${AZURE_RESOURCE_GROUP}"
+          echo "AKS $Env.AZURE_AKS_CLUSTER_NAME or ${AZURE_AKS_CLUSTER_NAME}"
+
       - name: Azure login
         id: login
         uses: azure/login@v1
