@@ -1,19 +1,19 @@
 on:
   workflow_dispatch:
-    # inputs:
-    #   AZURE_LOCATION:
-    #     description: 'The location for deployment (ie eastus or centralus)'
-    #     required: true
-    #     type: string
-    #   AZURE_ENV_NAME:
-    #     description: 'The Azure environment (ie dev, test, prod)'
-    #     required: false
-    #     type: string
-    #     default: 'dev'
-    #   AZURE_INFRA_NAME:
-    #     description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
-    #     required: true
-    #     type: string
+    inputs:
+      AZURE_LOCATION:
+        description: 'The location for deployment (ie eastus or centralus)'
+        required: true
+        type: string
+      AZURE_ENV_NAME:
+        description: 'The Azure environment (ie dev, test, prod)'
+        required: false
+        type: string
+        default: 'dev'
+      AZURE_INFRA_NAME:
+        description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
+        required: true
+        type: string
 
 
 #   push:
@@ -87,15 +87,15 @@ jobs:
         id: login
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       - name: Set AKS context
         id: set-context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: '${{ secrets.AZURE_RESOURCE_GROUP }}' 
-          cluster-name: '${{ secrets.AZURE_AKS_CLUSTER_NAME }}'
+          resource-group: "$Env.AZURE_RESOURCE_GROUP" 
+          cluster-name: "$Env.AZURE_AKS_CLUSTER_NAME"
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
