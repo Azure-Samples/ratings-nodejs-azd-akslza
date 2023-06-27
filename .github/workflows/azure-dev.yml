@@ -73,13 +73,13 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Provision Infrastructure
-        run: azd provision --no-prompt
-        env:
-          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+      # - name: Provision Infrastructure
+      #   run: azd provision --no-prompt
+      #   env:
+      #     AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      #     AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      #     AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      #     AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
 
       #############################################################################
       # set up kubectl
@@ -179,6 +179,10 @@ jobs:
                    
             echo "remote kubectl command - create namespace"
             # Create ratinsapp namespace
+            export NAMESPACE=ratingsapp
+            if ! az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl get ns"|grep ${NAMESPACE}; then
+               az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
+            fi            
             
             # Install Mongo configmap
             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml"
@@ -190,10 +194,7 @@ jobs:
             az acr import --name ${{ env.AZURE_CONTAINER_REGISTRY}} --source docker.io/bitnami/mongodb:5.0.14-debian-11-r9 \
             --image bitnami/mongodb:5.0.14-debian-11-r9 --force
 
-            export NAMESPACE=ratingsapp
-            if ! kubectl get namespaces|grep ${NAMESPACE}; then
-               az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
-            fi
+
 
             if kubectl get ingress -n ${NAMESPACE} |grep ratings-web-https; then
               kubectl delete ingress -n ${NAMESPACE} ratings-web-https
