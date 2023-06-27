@@ -163,22 +163,18 @@ jobs:
             az extension add --name k8s-extension
             az extension update --name k8s-extension
 
-      - name: Install Common Services onto AKS
-        uses: Azure/CLI@v1
-        with:
-          azcliversion: latest
-          inlineScript: |
+      # - name: Install Common Services onto AKS
+      #   uses: Azure/CLI@v1
+      #   with:
+      #     azcliversion: latest
+      #     inlineScript: |
             echo "running az login"
             # Login using the Managed Identity of the self-hosted GH runner VM
             az login --identity
             
             echo "az config set"
             az config set extension.use_dynamic_install=yes_without_prompt
-            
-            # Enable OIDC Issuer 
-            # az aks update --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --enable-oidc-issuer
-            # echo 'oidcIssuerProfile.issuerUrl:' $(az aks show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --query "oidcIssuerProfile.issuerUrl" -otsv)
-                   
+                            
             echo "remote kubectl command - create namespace"
             # Create ratinsapp namespace
             export NAMESPACE=ratingsapp
