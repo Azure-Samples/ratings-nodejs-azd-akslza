@@ -87,9 +87,10 @@ jobs:
         run: |
           echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
           . .azure/${{ vars.AZURE_ENV_NAME }}/.env
-          echo "cat env"
+          echo "cat env ${{ vars.AZURE_ENV_NAME }}"
           cat .azure/${{ vars.AZURE_ENV_NAME }}/.env
-          echo "AZURE_AKS_AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
+
+          echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
           echo "AZURE_CONTAINER_REGISTRY=${AZURE_CONTAINER_REGISTRY}" >> $GITHUB_ENV
@@ -101,6 +102,7 @@ jobs:
           echo "AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}" >> $GITHUB_ENV
           echo "AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" >> $GITHUB_ENV
           echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
+
       # - name: Azure login
       #   id: login
       #   uses: azure/login@v1
@@ -115,7 +117,7 @@ jobs:
       #   env:
       #     kubeloginversion: 'v0.0.28'
       #   run: |
-      #     az aks get-credentials -n ${{ env.AZURE_AKS_AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing --admin
+      #     az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing --admin
 
       #     wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
       #     unzip kubelogin-linux-amd64.zip
@@ -127,7 +129,7 @@ jobs:
       #   uses: azure/aks-set-context@v3
       #   with:
       #     resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
-      #     cluster-name: ${{ env.AZURE_AKS_AZURE_AKS_CLUSTER_NAME }}
+      #     cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
   
       # - name: Deploy Mongo to AKS
       #   id: deploy-aks-mongo
