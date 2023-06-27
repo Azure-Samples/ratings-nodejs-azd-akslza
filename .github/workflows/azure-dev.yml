@@ -5,6 +5,7 @@ on:
         description: 'The location for deployment (ie eastus or centralus)'
         required: true
         type: string
+        default: 'centralus'
       AZURE_ENV_NAME:
         description: 'The Azure environment (ie dev, test, prod)'
         required: false
@@ -14,6 +15,7 @@ on:
         description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
         required: true
         type: string
+        default: 'akscqtst01'
 
 
 #   push:
@@ -73,13 +75,13 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Provision Infrastructure
-      #   run: azd provision --no-prompt
-      #   env:
-      #     AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-      #     AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      #     AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      #     AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
 
       #############################################################################
       # set up kubectl
