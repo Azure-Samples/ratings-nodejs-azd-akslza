@@ -85,6 +85,9 @@ jobs:
 
       #############################################################################
       # set up kubectl
+  predeployment:
+    runs-on: self-hosted
+    steps:
       - name: GetEnvironment
         run: |
           echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
@@ -163,11 +166,11 @@ jobs:
             az extension add --name k8s-extension
             az extension update --name k8s-extension
 
-      # - name: Install Common Services onto AKS
-      #   uses: Azure/CLI@v1
-      #   with:
-      #     azcliversion: latest
-      #     inlineScript: |
+      - name: Install Common Services onto AKS
+        uses: Azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
             echo "running az login"
             # Login using the Managed Identity of the self-hosted GH runner VM
             az login --identity
@@ -177,7 +180,7 @@ jobs:
                             
             echo "remote kubectl command - create namespace"
             # Create ratinsapp namespace
-            export NAMESPACE=ratingsapp
+            export NAMESPACE=ratingsapp;
             if ! az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl get ns"|grep ${NAMESPACE}; then
                az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
             fi            
