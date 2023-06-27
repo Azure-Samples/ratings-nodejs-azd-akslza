@@ -86,7 +86,9 @@ jobs:
       - name: GetEnvironment
         run: |
           echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
-          . .azure/${{ vars.AZURE_ENV_NAME }}/.env 
+          . .azure/${{ vars.AZURE_ENV_NAME }}/.env
+          echo "cat env"
+          cat .azure/${{ vars.AZURE_ENV_NAME }}/.env
           echo "AZURE_AKS_AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
@@ -169,19 +171,31 @@ jobs:
             echo "az config set"
             az config set extension.use_dynamic_install=yes_without_prompt
             
-            # # Enable OIDC Issuer 
+            # Enable OIDC Issuer 
             # az aks update --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --enable-oidc-issuer
             # echo 'oidcIssuerProfile.issuerUrl:' $(az aks show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --query "oidcIssuerProfile.issuerUrl" -otsv)
                    
             echo "remote kubectl command - create namespace"
             # Create ratinsapp namespace
-            az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create namespace ratingsapp"
-
+            
             # Install Mongo configmap
             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml"
             
             # Install Let's Encrypt Certificate Manager
             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml"
+
+            # import mongo imaget into ACR
+            az acr import --name ${{ env.AZURE_CONTAINER_REGISTRY}} --source docker.io/bitnami/mongodb:5.0.14-debian-11-r9 \
+            --image bitnami/mongodb:5.0.14-debian-11-r9 --force
+
+            export NAMESPACE=ratingsapp
+            if ! kubectl get namespaces|grep ${NAMESPACE}; then
+               az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
+            fi
+
+            if kubectl get ingress -n ${NAMESPACE} |grep ratings-web-https; then
+              kubectl delete ingress -n ${NAMESPACE} ratings-web-https
+            fi
 
       - name: Create Random MongoDB password for this app
         run: | 
