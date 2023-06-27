@@ -147,6 +147,15 @@ jobs:
       # ./src/manifests/cert-manager/cert-manager.yaml
       # images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
       #############################################################################
+      - name: Install K8s Extension
+        uses: Azure/CLI@v1
+        continue-on-error: true
+        with:
+          azcliversion: latest
+          inlineScript: |
+          
+            az extension add --name k8s-extension
+            az extension update --name k8s-extension
       - name: Install Common Services onto AKS
         uses: Azure/CLI@v1
         with:
