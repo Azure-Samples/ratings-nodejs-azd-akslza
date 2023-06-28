@@ -120,7 +120,7 @@ jobs:
         env:
           kubeloginversion: 'v0.0.28'
         run: |
-          az login --identity --${{ env.AZURE_TENANT_ID }}
+          az login --identity --tenant ${{ env.AZURE_TENANT_ID }}
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing --admin
 
           wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
