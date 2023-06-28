@@ -216,11 +216,11 @@ jobs:
             echo 'ACR_NAME='$ACR_NAME >> $GITHUB_ENV
 
       #############################################################################  
-  deploy:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/azure-dev-cli-apps:latest      - name: Deploy Application
-    steps:                
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: mcr.microsoft.com/azure-dev-cli-apps:latest      - name: Deploy Application
+  #   steps:                
       - name: Deploy Application
         run: azd deploy --no-prompt
         env:
