@@ -120,7 +120,6 @@ jobs:
         env:
           kubeloginversion: 'v0.0.28'
         run: |
-          az login --identity --${{ env.AZURE_TENANT_ID }}
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing --admin
 
           wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
@@ -155,6 +154,64 @@ jobs:
       # ./src/manifests/cert-manager/cert-manager.yaml
       # images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
       #############################################################################
+#       - name: Install K8s Extension
+#         uses: Azure/CLI@v1
+# #        continue-on-error: true
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+          
+#             az extension add --name k8s-extension
+#             az extension update --name k8s-extension
+
+#       - name: Install Common Services onto AKS
+#         uses: Azure/CLI@v1
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+#             echo "running az login"
+#             # Login using the Managed Identity of the self-hosted GH runner VM
+#             az login --identity
+            
+#             echo "az config set"
+#             az config set extension.use_dynamic_install=yes_without_prompt
+                            
+#             echo "remote kubectl command - create namespace"
+#             # Create ratinsapp namespace
+#             export NAMESPACE=ratingsapp;
+#             if ! az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl get ns"|grep ${NAMESPACE}; then
+#                az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
+#             fi            
+            
+#             # Install Mongo configmap
+#             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml"
+            
+#             # Install Let's Encrypt Certificate Manager
+#             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml"
+
+#             # import mongo imaget into ACR
+#             az acr import --name ${{ env.AZURE_CONTAINER_REGISTRY}} --source docker.io/bitnami/mongodb:5.0.14-debian-11-r9 \
+#             --image bitnami/mongodb:5.0.14-debian-11-r9 --force
+
+
+
+#             if kubectl get ingress -n ${NAMESPACE} |grep ratings-web-https; then
+#               kubectl delete ingress -n ${NAMESPACE} ratings-web-https
+#             fi
+
+#       - name: Create Random MongoDB password for this app
+#         run: | 
+#             echo 'MongoDB_Password='$(uuidgen) >> $GITHUB_ENV
+
+#       - name: Find ACR Name
+#         uses: Azure/CLI@v1
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+          
+#             az login --identity # Login as the VM's Managed Identity
+#             ACR_NAME="$(az acr list --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --query [0].name -o tsv)"
+#             echo 'ACR_NAME='$ACR_NAME >> $GITHUB_ENV
 
       #############################################################################         
       - name: Deploy Application
