@@ -86,7 +86,7 @@ jobs:
       #############################################################################
       # set up kubectl
   predeployment:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: GetEnvironment
         run: |
@@ -215,7 +215,12 @@ jobs:
             ACR_NAME="$(az acr list --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --query [0].name -o tsv)"
             echo 'ACR_NAME='$ACR_NAME >> $GITHUB_ENV
 
-      #############################################################################            
+      #############################################################################  
+  deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/azure-dev-cli-apps:latest      - name: Deploy Application
+    steps:                
       - name: Deploy Application
         run: azd deploy --no-prompt
         env:
