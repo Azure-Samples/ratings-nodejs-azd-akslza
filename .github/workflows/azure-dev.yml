@@ -125,13 +125,15 @@ jobs:
         id: install-kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Get credentials
+      - name: Get AKS credentials
         uses: Azure/CLI@v1
         with:
           azcliversion: latest
           inlineScript: |
+            azure --version || azure account show 
             echo "Pulling Credentials"
-            az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --overwrite-existing --admin
+            az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
+            kubectl get nodes
 
       # - name: Kubelogin
       #   env:
