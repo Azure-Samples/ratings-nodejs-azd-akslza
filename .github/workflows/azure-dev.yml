@@ -124,8 +124,7 @@ jobs:
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
-        with:
-          version: '1.21.2'
+        
       # - name: Kubelogin
       #   env:
       #     kubeloginversion: 'v0.0.28'
