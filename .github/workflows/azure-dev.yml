@@ -134,8 +134,7 @@ jobs:
       - name: After Kubectl
         run: |
           az --version
-          azure --version
-          azure account show 
+          az account show 
           echo "this is an echo"
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
           kubectl get nodes
