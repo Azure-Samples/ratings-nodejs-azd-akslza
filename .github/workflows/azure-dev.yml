@@ -88,6 +88,7 @@ jobs:
       - name: GetEnvironment
         shell: bash
         run: |
+          . .azure/${{ vars.AZURE_ENV_NAME }}/.env
           echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
