@@ -113,6 +113,9 @@ jobs:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: After Login
+        run: az --version
         
       - name: Set AKS context
         id: set-context
@@ -120,20 +123,33 @@ jobs:
         with:
           resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
           cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
-  
-      - name: Setup kubectl
-        id: install-kubectl
-        uses: azure/setup-kubectl@v3
 
-      - name: Get AKS credentials
-        uses: Azure/CLI@v1
-        with:
-          azcliversion: latest
-          inlineScript: |
-            azure --version || azure account show 
-            echo "Pulling Credentials"
-            az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
-            kubectl get nodes
+      - name: After Context
+        run: az --version
+    
+      - name: Setup kubectl
+        id: install
+        uses: azure/setup-kubectl@v3
+          
+      - name: After Kubectl
+        run: |
+          az --version
+          azure --version
+          azure account show 
+          echo "this is an echo"
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
+          kubectl get nodes
+
+      # - name: Get AKS credentials
+      #   uses: Azure/CLI@v1
+      #   with:
+      #     azcliversion: latest
+      #     inlineScript: |
+            # azure --version
+            # azure account show 
+            # echo "Pulling Credentials"
+            # az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
+            # kubectl get nodes
 
       # - name: Kubelogin
       #   env:
