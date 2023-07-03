@@ -130,17 +130,25 @@ jobs:
       - name: AKS Get Credentials
         run: |
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
+          echo "Test access by getting nodes"
           kubectl get nodes
 
-      - name: Import Images
+      - name: Import Images to ACR
         run: |
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9' --force
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'quay.io/jetstack/cert-manager-cainjector:v1.8.0' --force
 
-      - name: Apply Cert-Manager manifest
+      - name: Apply Cert-Manager manifest and mongodb configmap
         run: |
+          NAMESPACE=ratinsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
-          kubectl apply -n ratingsapp -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          doesNamespaceExist=$(kubectl get ns 2>&1| grep ${NAMESPACE})
+          if ! [[ "${doesNamespaceExist}" ]]; then 
+             kubectl create namespace ${NAMESPACE}
+          fi
+          kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          # unset KUBECONFIG so that azd will work
+          unset KUBECONFIG
   
       #############################################################################
 
