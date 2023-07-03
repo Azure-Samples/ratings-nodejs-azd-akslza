@@ -136,11 +136,15 @@ jobs:
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
           kubectl get nodes
 
-      - name:
+      - name: Import Images
         run: |
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9' --force
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'quay.io/jetstack/cert-manager-cainjector:v1.8.0' --force
 
+      - name: Apply Cert-Manager manifest
+        run: |
+          kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
+  
       # - name: Get AKS credentials
       #   uses: Azure/CLI@v1
       #   with:
@@ -174,14 +178,14 @@ jobs:
              ./src/manifests/mongo/ratings-mongodb-configmap.yaml
           images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/bitnami/mongodb:5.0.14-debian-11-r9 
           pull-images: false 
-      - name: Deploy Cert Manager to AKS
-        id: deploy-aks-cert-manager
-        uses: Azure/k8s-deploy@v4
-        with:
-          manifests: |
-            ./src/manifests/cert-manager/cert-manager.yaml
-          images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
-          pull-images: false 
+      # - name: Deploy Cert Manager to AKS
+      #   id: deploy-aks-cert-manager
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     manifests: |
+      #       ./src/manifests/cert-manager/cert-manager.yaml
+      #     images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
+      #     pull-images: false 
         
       #############################################################################
 
