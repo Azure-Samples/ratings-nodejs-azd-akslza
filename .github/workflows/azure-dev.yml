@@ -131,13 +131,14 @@ jobs:
         id: install
         uses: azure/setup-kubectl@v3
           
-      - name: After Kubectl
+      - name: AKS Get Credentials
         run: |
-          az --version
-          az account show 
-          echo "this is an echo"
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
           kubectl get nodes
+
+      - name:
+        run: |
+          az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9'
 
       # - name: Get AKS credentials
       #   uses: Azure/CLI@v1
@@ -170,18 +171,16 @@ jobs:
           namespace: 'ratingsapp'
           manifests: |
              ./src/manifests/mongo/ratings-mongodb-configmap.yaml
-          images: 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9 '
+          images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/bitnami/mongodb:5.0.14-debian-11-r9 
           pull-images: false 
       - name: Deploy Cert Manager to AKS
         id: deploy-aks-cert-manager
         uses: Azure/k8s-deploy@v4
         with:
           manifests: |
-             ./src/manifests/cert-manager/cert-manager.yaml
+            ./src/manifests/cert-manager/cert-manager.yaml
+            images: "quay.io/jetstack/cert-manager-cainjector:v1.8.0"
         
-      # docker.io/bitnami/mongodb:5.0.14-debian-11-r9    
-      # ./src/manifests/cert-manager/cert-manager.yaml
-      # images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
       #############################################################################
 
       #############################################################################         
