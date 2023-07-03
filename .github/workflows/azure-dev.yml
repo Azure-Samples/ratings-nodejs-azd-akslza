@@ -180,7 +180,8 @@ jobs:
         with:
           manifests: |
             ./src/manifests/cert-manager/cert-manager.yaml
-            images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
+          images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
+          pull-images: false 
         
       #############################################################################
 
