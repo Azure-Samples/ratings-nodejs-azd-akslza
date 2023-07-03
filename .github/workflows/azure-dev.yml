@@ -139,6 +139,7 @@ jobs:
       - name:
         run: |
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9'
+          az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'quay.io/jetstack/cert-manager-cainjector:v1.8.0'
 
       # - name: Get AKS credentials
       #   uses: Azure/CLI@v1
@@ -179,7 +180,7 @@ jobs:
         with:
           manifests: |
             ./src/manifests/cert-manager/cert-manager.yaml
-            images: "quay.io/jetstack/cert-manager-cainjector:v1.8.0"
+            images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
         
       #############################################################################
 
