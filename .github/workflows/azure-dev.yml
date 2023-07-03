@@ -12,7 +12,7 @@ on:
         type: string
         default: 'dev'
       AZURE_INFRA_NAME:
-        description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
+        description: 'The name seed for all infrastructure components.  A name seed of my01 will result in my01-rg and aks-my01'
         required: true
         type: string
         default: 'akscqtst01'
@@ -88,11 +88,6 @@ jobs:
       - name: GetEnvironment
         shell: bash
         run: |
-          echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
-          . .azure/${{ vars.AZURE_ENV_NAME }}/.env
-          echo "cat env ${{ vars.AZURE_ENV_NAME }}"
-          cat .azure/${{ vars.AZURE_ENV_NAME }}/.env
-
           echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
@@ -144,49 +139,8 @@ jobs:
       - name: Apply Cert-Manager manifest
         run: |
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
+          kubectl apply -n ratingsapp -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
   
-      # - name: Get AKS credentials
-      #   uses: Azure/CLI@v1
-      #   with:
-      #     azcliversion: latest
-      #     inlineScript: |
-            # azure --version
-            # azure account show 
-            # echo "Pulling Credentials"
-            # az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
-            # kubectl get nodes
-
-      # - name: Kubelogin
-      #   env:
-      #     kubeloginversion: 'v0.0.28'
-      #   run: |
-      #       
-      #     az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --overwrite-existing --admin
-
-      #     wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
-      #     unzip kubelogin-linux-amd64.zip
-      #     # sudo mv bin/linux_amd64/kubelogin /usr/bin
-      #     mv bin/linux_amd64/kubelogin /usr/bin
-      #     kubelogin convert-kubeconfig -l azurecli
-
-      - name: Deploy Mongo to AKS
-        id: deploy-aks-mongo
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'ratingsapp'
-          manifests: |
-             ./src/manifests/mongo/ratings-mongodb-configmap.yaml
-          images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/bitnami/mongodb:5.0.14-debian-11-r9 
-          pull-images: false 
-      # - name: Deploy Cert Manager to AKS
-      #   id: deploy-aks-cert-manager
-      #   uses: Azure/k8s-deploy@v4
-      #   with:
-      #     manifests: |
-      #       ./src/manifests/cert-manager/cert-manager.yaml
-      #     images: ${{ env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/jetstack/cert-manager-cainjector:v1.8.0
-      #     pull-images: false 
-        
       #############################################################################
 
       #############################################################################         
