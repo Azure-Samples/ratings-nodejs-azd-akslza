@@ -131,6 +131,7 @@ jobs:
         with:
           resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
           cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
+          admin: 'true'
 
       - name: After Context
         run: az --version
@@ -142,7 +143,7 @@ jobs:
       - name: AKS Get Credentials
         run: |
           echo "Using KUBE $KUBECONFIG"
-          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context ${{ env.AZURE_AKS_CLUSTER_NAME }}-admin --admin
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context ${{ env.AZURE_AKS_CLUSTER_NAME }}-admin --file=~/.kube/${{ env.AZURE_AKS_CLUSTER_NAME }} --admin
           echo "Test access by getting nodes"
           kubectl get nodes
 
