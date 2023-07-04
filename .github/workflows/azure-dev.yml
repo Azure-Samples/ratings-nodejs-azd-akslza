@@ -143,9 +143,9 @@ jobs:
           NAMESPACE=ratinsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl get namespace
-          echo "About to grep namespace"
-          kubectl get namespace|grep ${NAMESPACE}
+          echo "About to check namespace"
           nsVerify="$(kubectl get namespace ${NAMESPACE})"
+          echo "About to run if statement"
           # if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
           - if: contains(${nsVerify}, 'not found')
               run: |
