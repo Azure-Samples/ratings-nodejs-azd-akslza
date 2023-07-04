@@ -88,7 +88,7 @@ jobs:
       - name: GetEnvironment
         shell: bash
         run: |
-          . .azure/${{ vars.AZURE_ENV_NAME }}/.env 
+          #. .azure/${{ vars.AZURE_ENV_NAME }}/.env 
           AZURE_INFRA_NAME: azdaks01
           AZURE_ENV_NAME: dev
           AZURE_AKS_CLUSTER_NAME: aks-azdaks01
