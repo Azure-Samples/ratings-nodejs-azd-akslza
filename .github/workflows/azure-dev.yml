@@ -143,10 +143,13 @@ jobs:
           NAMESPACE=ratinsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl get namespace
-          nsVerify="$(kubectl get namespace | grep ${NAMESPACE})"
-          if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
+          echo "About to grep namespace"
+          kubectl get namespace|grep ${NAMESPACE}
+          # nsVerify="$(kubectl get namespace | grep ${NAMESPACE})"
+          # if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
+          if ! kubectl get namespace|grep ${NAMESPACE}; then
             echo "Creating namespace ${NAMESPACE}";
-             kubectl create namespace ${NAMESPACE}
+            kubectl create namespace ${NAMESPACE}
           fi
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
           # unset KUBECONFIG so that azd will work
