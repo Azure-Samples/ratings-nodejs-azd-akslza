@@ -129,7 +129,7 @@ jobs:
           
       - name: AKS Get Credentials
         run: |
-          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --admin
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context ${{ env.AZURE_AKS_CLUSTER_NAME }}-admin --admin
           echo "Test access by getting nodes"
           kubectl get nodes
 
@@ -145,14 +145,12 @@ jobs:
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl apply -f ./src/manifests/ratingsapp.ns.yaml
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
-          # unset KUBECONFIG so that azd will work
-          unset KUBECONFIG
   
       #############################################################################
 
       #############################################################################         
       - name: Deploy Application
-        run: azd deploy --no-prompt
+        run: azd deploy --no-prompt --debug
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
