@@ -103,21 +103,21 @@ jobs:
           echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
 
       #############################################################################
-          AZURE_CLIENT_ID=699323c3-5127-4101-bf64-1812a33d9082
-          AZURE_TENANT_ID=449fbe1d-9c99-4509-9014-4fd5cf25b014
-          AZURE_SUBSCRIPTION_ID=82e70289-bf40-45f9-8476-eab93d2031f4
-          AZURE_INFRA_NAME=azdaks01
-          AZURE_ENV_NAME=dev
-          AZURE_AKS_CLUSTER_NAME=aks-azdaks01
-          AZURE_APP_GATEWAY_NAME=agw-azdaks01
-          AZURE_APP_MSI=37a01243-c625-4bda-a926-d1ff19a25cd3
-          AZURE_CONTAINER_REGISTRY=crazdaks01xt2fczeqlriqi
-          AZURE_CONTAINER_REGISTRY_ENDPOINT=crazdaks01xt2fczeqlriqi.azurecr.io
-          AZURE_DNS_LABEL=cqtst22
-          AZURE_EMAIL_ADDRESS='carmodyquinn@microsoft.com'
-          AZURE_KEY_VAULT_NAME=kv-appazdaks01tdg5zgmisp
-          AZURE_LOCATION=centralus
-          AZURE_RESOURCE_GROUP=azdaks01-rg
+          AZURE_CLIENT_ID: 699323c3-5127-4101-bf64-1812a33d9082
+          AZURE_TENANT_ID: 449fbe1d-9c99-4509-9014-4fd5cf25b014
+          AZURE_SUBSCRIPTION_ID: 82e70289-bf40-45f9-8476-eab93d2031f4
+          AZURE_INFRA_NAME: azdaks01
+          AZURE_ENV_NAME: dev
+          AZURE_AKS_CLUSTER_NAME: aks-azdaks01
+          AZURE_APP_GATEWAY_NAME: agw-azdaks01
+          AZURE_APP_MSI: 37a01243-c625-4bda-a926-d1ff19a25cd3
+          AZURE_CONTAINER_REGISTRY: crazdaks01xt2fczeqlriqi
+          AZURE_CONTAINER_REGISTRY_ENDPOINT: crazdaks01xt2fczeqlriqi.azurecr.io
+          AZURE_DNS_LABEL: cqtst22
+          AZURE_EMAIL_ADDRESS: 'carmodyquinn@microsoft.com'
+          AZURE_KEY_VAULT_NAME: kv-appazdaks01tdg5zgmisp
+          AZURE_LOCATION: centralus
+          AZURE_RESOURCE_GROUP: azdaks01-rg
 
 
           echo "AZURE_CLIENT_ID=699323c3-5127-4101-bf64-1812a33d9082" >> $GITHUB_ENV
