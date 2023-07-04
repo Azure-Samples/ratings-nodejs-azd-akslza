@@ -88,18 +88,18 @@ jobs:
       # . .azure/${{ vars.AZURE_ENV_NAME }}/.env 
       - name: GetEnvironment
         shell: bash
-        env: 
-          AZURE_INFRA_NAME: azdaks01
-          AZURE_ENV_NAME: dev
-          AZURE_AKS_CLUSTER_NAME: aks-azdaks01
-          AZURE_APP_GATEWAY_NAME: agw-azdaks01
-          AZURE_CONTAINER_REGISTRY: crazdaks01xt2fczeqlriqi
-          AZURE_CONTAINER_REGISTRY_ENDPOINT: 'crazdaks01xt2fczeqlriqi.azurecr.io'
-          AZURE_DNS_LABEL: cqtst22
-          AZURE_EMAIL_ADDRESS: 'carmodyquinn@microsoft.com'
-          AZURE_KEY_VAULT_NAME: 'kv-appazdaks01tdg5zgmisp'
-          AZURE_LOCATION: centralus
-          AZURE_RESOURCE_GROUP: azdaks01-rg
+        # env: 
+        #   AZURE_INFRA_NAME: azdaks01
+        #   AZURE_ENV_NAME: dev
+        #   AZURE_AKS_CLUSTER_NAME: aks-azdaks01
+        #   AZURE_APP_GATEWAY_NAME: agw-azdaks01
+        #   AZURE_CONTAINER_REGISTRY: crazdaks01xt2fczeqlriqi
+        #   AZURE_CONTAINER_REGISTRY_ENDPOINT: 'crazdaks01xt2fczeqlriqi.azurecr.io'
+        #   AZURE_DNS_LABEL: cqtst22
+        #   AZURE_EMAIL_ADDRESS: 'carmodyquinn@microsoft.com'
+        #   AZURE_KEY_VAULT_NAME: 'kv-appazdaks01tdg5zgmisp'
+        #   AZURE_LOCATION: centralus
+        #   AZURE_RESOURCE_GROUP: azdaks01-rg
         run: |
           echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
@@ -141,6 +141,7 @@ jobs:
           
       - name: AKS Get Credentials
         run: |
+          echo "Using KUBE $KUBECONFIG"
           az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context ${{ env.AZURE_AKS_CLUSTER_NAME }}-admin --admin
           echo "Test access by getting nodes"
           kubectl get nodes
