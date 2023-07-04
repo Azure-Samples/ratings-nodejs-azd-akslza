@@ -141,7 +141,7 @@ jobs:
       - name: Apply Cert-Manager manifest and mongodb configmap
         continue-on-error: true
         run: |
-          NAMESPACE=ratinsapp
+          NAMESPACE=ratingsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl apply -f ./src/manifests/ratingsapp.ns.yaml
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
