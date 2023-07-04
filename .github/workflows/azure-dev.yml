@@ -160,6 +160,8 @@ jobs:
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl apply -f ./src/manifests/ratingsapp.ns.yaml
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          ############### get context
+          kubectl config get-contexts
   
       #############################################################################
 
