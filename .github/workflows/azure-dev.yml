@@ -145,13 +145,13 @@ jobs:
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
           kubectl get namespace
           echo "About to check namespace"
-          nsVerify="$(kubectl get namespace ${NAMESPACE})"
+          # fails on the next command
+          nsVerify="$(kubectl get namespace ${NAMESPACE} 2>&1)"
           echo "About to run if statement"
-          # if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
-          - if: contains(${nsVerify}, 'not found')
-              run: |
-                echo "Creating namespace ${NAMESPACE}";
-                kubectl create namespace ${NAMESPACE}
+          if [[ "$nsVerify" == *"not found"* ]]; then
+            echo "Creating namespace ${NAMESPACE}";
+            kubectl create namespace ${NAMESPACE}
+          fi       
 
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
           # unset KUBECONFIG so that azd will work
