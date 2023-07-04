@@ -142,8 +142,9 @@ jobs:
         run: |
           NAMESPACE=ratinsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
-          doesNamespaceExist="$(kubectl get ns | grep ${NAMESPACE})"
-          if [[ "${doesNamespaceExist}" != "${NAMESPACE}"]]; then 
+          kubectl get namespace
+          nsVerify="$(kubectl get namespace | grep ${NAMESPACE})"
+          if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
             echo "Creating namespace ${NAMESPACE}";
              kubectl create namespace ${NAMESPACE}
           fi
