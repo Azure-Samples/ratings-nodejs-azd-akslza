@@ -139,6 +139,7 @@ jobs:
           az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'quay.io/jetstack/cert-manager-cainjector:v1.8.0' --force
 
       - name: Apply Cert-Manager manifest and mongodb configmap
+        continue-on-error: true
         run: |
           NAMESPACE=ratinsapp
           kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
