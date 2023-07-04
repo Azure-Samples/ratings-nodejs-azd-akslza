@@ -145,12 +145,14 @@ jobs:
           kubectl get namespace
           echo "About to grep namespace"
           kubectl get namespace|grep ${NAMESPACE}
-          # nsVerify="$(kubectl get namespace | grep ${NAMESPACE})"
+          nsVerify="$(kubectl get namespace | grep ${NAMESPACE})"
           # if [[ "${nsVerify}" != "${NAMESPACE}"]]; then 
-          if ! kubectl get namespace|grep ${NAMESPACE}; then
-            echo "Creating namespace ${NAMESPACE}";
-            kubectl create namespace ${NAMESPACE}
-          fi
+          - if: ${nsVerify} != ${NAMESPACE}
+            name: Create App Namespace
+            run: |
+              echo "Creating namespace ${NAMESPACE}";
+              kubectl create namespace ${NAMESPACE}
+
           kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
           # unset KUBECONFIG so that azd will work
           unset KUBECONFIG
