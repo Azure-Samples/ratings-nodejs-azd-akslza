@@ -1,3 +1,5 @@
+name: AZD Down
+
 on:
     workflow_dispatch:
       inputs:
