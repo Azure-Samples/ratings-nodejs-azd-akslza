@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: ratings-web
-        image: ${SERVICE_WEB_IMAGE_NAME}
+        image: {{ .Env.SERVICE_WEB_IMAGE_NAME }}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080 # the application listens to this port

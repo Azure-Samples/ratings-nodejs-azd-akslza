@@ -1,5 +1,50 @@
 # Before this deployment, ensure that MongoDB has been created using Helm.
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings-api
+spec:
+  selector:
+    app: ratings-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+---  
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: {{ .Env.AZURE_APP_MSI }}
+    azure.workload.identity/tenant-id: {{ .Env.AZURE_TENANT_ID }}
+  labels:
+    azure.workload.identity/use: "true"
+  name: workload-sa
+  namespace: ratingsapp
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: mongo-secret-csi
+spec:
+  provider: azure
+  parameters:
+    clientID: {{ .Env.AZURE_APP_MSI }}
+    keyvaultName: {{ .Env.AZURE_KEY_VAULT_NAME }}
+    objects: |
+      array:
+        - |
+          objectName: mongodburi
+          objectType: secret
+    tenantId: {{ .Env.AZURE_TENANT_ID }}
+  secretObjects:
+  - data:
+    - key: MONGODBURI
+      objectName: mongodburi
+    secretName: mongodburi
+    type: Opaque
+---    
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +61,7 @@ spec:
       serviceAccountName: workload-sa
       containers:
       - name: ratings-api
-        image: ${SERVICE_API_IMAGE_NAME}
+        image: {{ .Env.SERVICE_API_IMAGE_NAME }}
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: secrets-store-inline

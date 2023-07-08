@@ -1,6 +1,10 @@
 # AKS Landing Zone Accelerator on Azure Developer CLI (AZD)
 Accelerate your onboarding to AKS with the Azure develper CLI and AKS landing zone accelerator. Provided here is a blueprint for getting a web app with a Node.js API on Azure using some of the AKS landing zone accelerator best practices. The blueprint includes sample application code (a ratings web app) which can be removed and replaced with your own application code. Add your own source code and use the Infrastructure as Code assets to get running quickly.
 
+---
+![WARNING](assets/WarningSign.jpg)
+# This version requires [azd pr2488](https://github.com/Azure/azure-dev/pull/2488)
+---
 # Prerequisites
 The following prerequisites are required to use this application. Please ensure that you have them all installed locally when using azd cli.
 - [Azure Developer CLI](https://aka.ms/azd-install)
@@ -28,6 +32,7 @@ This application utilizes the following Azure resources:
 # Deploy with azd cli
 To deploy with azd cli from a bash environment run the following steps:
 Note: Full deployment of the system and applications takes approximately 12 minutes
+Variables should either be in the environment or added to the .azure/${AZURE_ENV_NAME}/.env file
 
 git clone this repo, cd into the repo directory and then run the following commands
 ```
@@ -36,6 +41,13 @@ git submodule init
 git submodule update
 azd auth login
 azd init
+# the AZURE_INFRA_NAME is the seed for azure resources (ie - ${AZURE_INFRA_NAME}-rg or aks-${AZURE_INFRA_NAME}
+export AZURE_INFRA_NAME=<nameseed>
+# the AZURE_DNS_LABEL is the short name for the app that is prepended to ${AZURE_LOCATION}.cloudapp.azure.com 
+# and you need to make sure it is available first by running nslookup ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
+export AZURE_DNS_LABEL=<dns short name>
+# a valid email address that is required by LetsEncrypt in order to provide a staging certificate
+AZURE_EMAIL_ADDRESS=<email address>
 azd up
 ```
 

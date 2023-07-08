@@ -4,14 +4,11 @@ name: ratingsapp
 metadata:
   template: LZA-ratingsapp@0.0.1-beta
 hooks:
-  # preprovision: 
-  #   shell: sh
-  #   interactive: true
-  #   continueOnError: true
-  #   # run: ./hooks/preprovision.sh
-  #   run: |
-  #     ls -al ./hooks
-  #     echo "hello world"
+  preprovision: 
+    shell: sh
+    interactive: true
+    continueOnError: true
+    run: ./hooks/preprovision.sh
   postprovision: 
     run: ./hooks/postprovision.sh
   predeploy: 
@@ -19,12 +16,7 @@ hooks:
     continueOnError: true
     interactive: true
     run: |
-      echo "Run get-creds"
-      echo "vars rg: ${AZURE_RESOURCE_GROUP} aks: ${AZURE_AKS_CLUSTER_NAME}"
-      az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
-      echo "Contents of ~/.kube after get-credentials"
-      ls -al ~/.kube
-      #./hooks/predeploy.sh
+      ./hooks/predeploy.sh
   postdeploy: 
     interactive: true
     run: ./hooks/postdeploy.sh

@@ -13,10 +13,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
+      - {{ .Env.AZURE_DNS_LABEL }}.{{ .Env.AZURE_LOCATION }}.cloudapp.azure.com
       secretName: aks-tls-akv
   rules:
-  - host: ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
+  - host: {{ .Env.AZURE_DNS_LABEL }}.{{ .Env.AZURE_LOCATION }}.cloudapp.azure.com
     http:  
       paths:
       - pathType: Prefix

@@ -97,7 +97,7 @@ items:
             value: "no"
           - name: MONGODB_ENABLE_DIRECTORY_PER_DB
             value: "no"
-          image: "${AZURE_CONTAINER_REGISTRY_ENDPOINT}/bitnami/mongodb:5.0.14-debian-11-r9"
+          image: "{{ .Env.AZURE_CONTAINER_REGISTRY_ENDPOINT }}/bitnami/mongodb:5.0.14-debian-11-r9"
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:

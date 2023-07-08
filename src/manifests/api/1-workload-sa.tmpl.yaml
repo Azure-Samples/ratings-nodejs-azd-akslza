@@ -2,8 +2,8 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    azure.workload.identity/client-id: ${AZURE_APP_MSI}
-    azure.workload.identity/tenant-id: ${AZURE_TENANT_ID}
+    azure.workload.identity/client-id: {{ .Env.AZURE_APP_MSI }}
+    azure.workload.identity/tenant-id: {{ .Env.AZURE_TENANT_ID }}
   labels:
     azure.workload.identity/use: "true"
   name: workload-sa
