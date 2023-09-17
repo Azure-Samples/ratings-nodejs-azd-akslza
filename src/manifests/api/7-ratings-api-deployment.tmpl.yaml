@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ratings-api
+  namespace: ratingsapp
 spec:
   selector:
     app: ratings-api
@@ -27,6 +28,7 @@ apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
   name: mongo-secret-csi
+  namespace: ratingsapp
 spec:
   provider: azure
   parameters:
@@ -49,6 +51,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ratings-api
+  namespace: ratingsapp
 spec:
   selector:
     matchLabels:
