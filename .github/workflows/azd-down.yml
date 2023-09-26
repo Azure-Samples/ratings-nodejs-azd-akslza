@@ -33,10 +33,9 @@ on:
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
 
-
 permissions:
   id-token: write
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -78,11 +77,10 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Delete Infrastructure
-        run: azd down --no-prompt --debug --force --purge
+        run: azd down --no-prompt --debug
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
           AZURE_RESOURCE_GROUP: ${{ vars.AZURE_INFRA_NAME }}-rg
-
