@@ -2,9 +2,6 @@
 Accelerate your onboarding to AKS with the Azure develper CLI and AKS landing zone accelerator. Provided here is a blueprint for getting a web app with a Node.js API on Azure using some of the AKS landing zone accelerator best practices. The blueprint includes sample application code (a ratings web app) which can be removed and replaced with your own application code. Add your own source code and use the Infrastructure as Code assets to get running quickly.
 
 ---
-![WARNING](assets/WarningSign.jpg)
-# This version requires [azd pr2488](https://github.com/Azure/azure-dev/pull/2488)
----
 # Prerequisites
 The following prerequisites are required to use this application. Please ensure that you have them all installed locally when using azd cli.
 - [Azure Developer CLI](https://aka.ms/azd-install)
