@@ -86,4 +86,5 @@ output aksOidcIssuerUrl string = aksconst.outputs.aksOidcIssuerUrl
 output aksClusterName string = aksconst.outputs.aksClusterName
 output containerRegistryName string = aksconst.outputs.containerRegistryName
 output AZURE_APP_GATEWAY_NAME string = aksconst.outputs.ApplicationGatewayName
+output AZURE_AKS_RESOURCE_ID string = aksconst.outputs.aksResourceId
 

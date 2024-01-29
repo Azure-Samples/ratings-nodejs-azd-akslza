@@ -1,0 +1,222 @@
+on:
+  workflow_dispatch:
+    inputs:
+      AZURE_LOCATION:
+        description: 'The location for deployment (ie eastus or centralus)'
+        required: true
+        type: string
+        default: 'centralus'
+      AZURE_ENV_NAME:
+        description: 'The Azure environment (ie dev, test, prod)'
+        required: false
+        type: string
+        default: 'dev'
+      AZURE_INFRA_NAME:
+        description: 'The name seed for all infrastructure.  A name seed of my01 will result in my01-rg and aks-my01'
+        required: true
+        type: string
+        default: 'akscqtst01'
+
+
+#   push:
+#     # Run when commits are pushed to mainline branch (main or master)
+#     # Set this to the mainline branch you are using
+#     branches:
+#       - main
+#       - master
+
+# GitHub Actions workflow to deploy to Azure using azd
+# To configure required secrets for connecting to Azure, simply run `azd pipeline config`
+
+# Set up permissions for deploying with secretless Azure federated credentials
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/azure-dev-cli-apps:latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Log in with Azure (Federated Credentials)
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        run: |
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+        shell: pwsh
+
+      - name: Log in with Azure (Client Credentials)
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        run: |
+          $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+          Write-Host "::add-mask::$($info.clientSecret)"
+
+          azd auth login `
+            --client-id "$($info.clientId)" `
+            --client-secret "$($info.clientSecret)" `
+            --tenant-id "$($info.tenantId)"
+        shell: pwsh
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+
+      #############################################################################
+      # set up kubectl
+      - name: GetEnvironment
+        shell: bash
+        run: |
+          echo "ENV is ${{ vars.AZURE_ENV_NAME }}"
+          . .azure/${{ vars.AZURE_ENV_NAME }}/.env
+          echo "cat env ${{ vars.AZURE_ENV_NAME }}"
+          cat .azure/${{ vars.AZURE_ENV_NAME }}/.env
+
+          echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY=${AZURE_CONTAINER_REGISTRY}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY_ENDPOINT=${AZURE_CONTAINER_REGISTRY_ENDPOINT}" >> $GITHUB_ENV
+          echo "AZURE_DNS_LABEL=${AZURE_DNS_LABEL}" >> $GITHUB_ENV
+          echo "AZURE_EMAIL_ADDRESS=${AZURE_EMAIL_ADDRESS}" >> $GITHUB_ENV
+          echo "AZURE_KEY_VAULT_NAME=${AZURE_KEY_VAULT_NAME}" >> $GITHUB_ENV
+          echo "AZURE_LOCATION=${AZURE_LOCATION}" >> $GITHUB_ENV
+          echo "AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" >> $GITHUB_ENV
+          echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
+
+      - name: Azure login
+        id: login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Kubelogin
+        env:
+          kubeloginversion: 'v0.0.28'
+        run: |
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --overwrite-existing --admin
+
+          wget https://github.com/Azure/kubelogin/releases/download/${{ env.kubeloginversion }}/kubelogin-linux-amd64.zip
+          unzip kubelogin-linux-amd64.zip
+          # sudo mv bin/linux_amd64/kubelogin /usr/bin
+          mv bin/linux_amd64/kubelogin /usr/bin
+          kubelogin convert-kubeconfig -l azurecli
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
+  
+      - name: Deploy Mongo to AKS
+        id: deploy-aks-mongo
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'ratingsapp'
+          manifests: |
+             ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          images: 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9 '
+          pull-images: false 
+      - name: Deploy Cert Manager to AKS
+        id: deploy-aks-cert-manager
+        uses: Azure/k8s-deploy@v4
+        with:
+          manifests: |
+             ./src/manifests/cert-manager/cert-manager.yaml
+        
+      # docker.io/bitnami/mongodb:5.0.14-debian-11-r9    
+      # ./src/manifests/cert-manager/cert-manager.yaml
+      # images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
+      #############################################################################
+#       - name: Install K8s Extension
+#         uses: Azure/CLI@v1
+# #        continue-on-error: true
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+          
+#             az extension add --name k8s-extension
+#             az extension update --name k8s-extension
+
+#       - name: Install Common Services onto AKS
+#         uses: Azure/CLI@v1
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+#             echo "running az login"
+#             # Login using the Managed Identity of the self-hosted GH runner VM
+#             az login --identity
+            
+#             echo "az config set"
+#             az config set extension.use_dynamic_install=yes_without_prompt
+                            
+#             echo "remote kubectl command - create namespace"
+#             # Create ratinsapp namespace
+#             export NAMESPACE=ratingsapp;
+#             if ! az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl get ns"|grep ${NAMESPACE}; then
+#                az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl create ${NAMESPACE}"
+#             fi            
+            
+#             # Install Mongo configmap
+#             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml"
+            
+#             # Install Let's Encrypt Certificate Manager
+#             az aks command invoke --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_AKS_CLUSTER_NAME }} --command "kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml"
+
+#             # import mongo imaget into ACR
+#             az acr import --name ${{ env.AZURE_CONTAINER_REGISTRY}} --source docker.io/bitnami/mongodb:5.0.14-debian-11-r9 \
+#             --image bitnami/mongodb:5.0.14-debian-11-r9 --force
+
+
+
+#             if kubectl get ingress -n ${NAMESPACE} |grep ratings-web-https; then
+#               kubectl delete ingress -n ${NAMESPACE} ratings-web-https
+#             fi
+
+#       - name: Create Random MongoDB password for this app
+#         run: | 
+#             echo 'MongoDB_Password='$(uuidgen) >> $GITHUB_ENV
+
+#       - name: Find ACR Name
+#         uses: Azure/CLI@v1
+#         with:
+#           azcliversion: latest
+#           inlineScript: |
+          
+#             az login --identity # Login as the VM's Managed Identity
+#             ACR_NAME="$(az acr list --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --query [0].name -o tsv)"
+#             echo 'ACR_NAME='$ACR_NAME >> $GITHUB_ENV
+
+      #############################################################################         
+      - name: Deploy Application
+        run: azd deploy --no-prompt
+        env:
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}

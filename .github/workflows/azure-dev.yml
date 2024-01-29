@@ -1,5 +1,24 @@
+name: AZD Up
+
 on:
   workflow_dispatch:
+    inputs:
+      AZURE_LOCATION:
+        description: 'The location for deployment (ie eastus or centralus)'
+        required: true
+        type: string
+        default: 'centralus'
+      AZURE_ENV_NAME:
+        description: 'The Azure environment (ie dev, test, prod)'
+        required: false
+        type: string
+        default: 'dev'
+      AZURE_INFRA_NAME:
+        description: 'The name seed for all infrastructure components.  A name seed of my01 will result in my01-rg and aks-my01'
+        required: true
+        type: string
+        default: 'akscqtst01'
+
 
 #   push:
 #     # Run when commits are pushed to mainline branch (main or master)
@@ -13,6 +32,8 @@ on:
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+
+
 permissions:
   id-token: write
   contents: read
@@ -21,14 +42,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/azure-dev-cli-apps:latest
+      # image: mcr.microsoft.com/azure-dev-cli-apps:latest
+      image: azdevcliextacr.azurecr.io/azure-dev:pr-2488
     env:
-      environment: cset
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -64,8 +86,80 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
 
+      #############################################################################
+      # set up kubectl
+      #  
+      - name: GetEnvironment
+        shell: bash
+        run: |
+          . .azure/${{ vars.AZURE_ENV_NAME }}/.env
+          echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
+          echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY=${AZURE_CONTAINER_REGISTRY}" >> $GITHUB_ENV
+          echo "AZURE_CONTAINER_REGISTRY_ENDPOINT=${AZURE_CONTAINER_REGISTRY_ENDPOINT}" >> $GITHUB_ENV
+          echo "AZURE_DNS_LABEL=${AZURE_DNS_LABEL}" >> $GITHUB_ENV
+          echo "AZURE_EMAIL_ADDRESS=${AZURE_EMAIL_ADDRESS}" >> $GITHUB_ENV
+          echo "AZURE_KEY_VAULT_NAME=${AZURE_KEY_VAULT_NAME}" >> $GITHUB_ENV
+          echo "AZURE_LOCATION=${AZURE_LOCATION}" >> $GITHUB_ENV
+          echo "AZURE_RESOURCE_GROUP=${AZURE_RESOURCE_GROUP}" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" >> $GITHUB_ENV
+          echo "AZURE_TENANT_ID=${AZURE_TENANT_ID}" >> $GITHUB_ENV
+
+      - name: Azure login
+        id: login
+        uses: azure/login@v1.4.3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: After Login
+        run: az --version
+        
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
+          admin: 'true'
+
+      - name: After Context
+        run: az --version
+    
+      - name: Setup kubectl
+        id: install
+        uses: azure/setup-kubectl@v3
+          
+      - name: AKS Get Credentials
+        run: |
+          echo "Using KUBE $KUBECONFIG"
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context ${{ env.AZURE_AKS_CLUSTER_NAME }}-admin --file=~/.kube/${{ env.AZURE_AKS_CLUSTER_NAME }} --admin
+          az aks get-credentials -n ${{ env.AZURE_AKS_CLUSTER_NAME }} -g ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{ env.AZURE_SUBSCRIPTION_ID }} --context=${{ env.AZURE_AKS_CLUSTER_NAME }} --file=~/.kube/${{ env.AZURE_AKS_CLUSTER_NAME }}
+          echo "Test access by getting nodes"
+          kubectl get nodes
+
+      - name: Import Images to ACR
+        run: |
+          az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'docker.io/bitnami/mongodb:5.0.14-debian-11-r9' --force
+          az acr import -n ${{ env.AZURE_CONTAINER_REGISTRY }} --source 'quay.io/jetstack/cert-manager-cainjector:v1.8.0' --force
+
+      - name: Apply Cert-Manager manifest and mongodb configmap
+        continue-on-error: true
+        run: |
+          NAMESPACE=ratingsapp
+          kubectl apply -f ./src/manifests/cert-manager/cert-manager.yaml
+          kubectl apply -f ./src/manifests/ratingsapp.ns.yaml
+          kubectl apply -n ${NAMESPACE} -f ./src/manifests/mongo/ratings-mongodb-configmap.yaml
+          ############### get context
+          kubectl config get-contexts
+  
+      #############################################################################
+
+      #############################################################################         
       - name: Deploy Application
-        run: azd deploy --no-prompt
+        run: azd deploy --no-prompt --debug
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
