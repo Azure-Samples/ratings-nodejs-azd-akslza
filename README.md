@@ -45,9 +45,7 @@ export AZURE_INFRA_NAME=<nameseed>
 export AZURE_DNS_LABEL=<dns short name>
 # a valid email address that is required by LetsEncrypt in order to provide a staging certificate
 AZURE_EMAIL_ADDRESS=<email address>
-azd provision
-kubectl config set-context --current --namespace=ratingsapp
-azd deploy
+azd up
 ```
 
 Now wait a few minutes for the ingress and dns to establish and then open up a web browser to the external url provided from the last step
