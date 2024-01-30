@@ -44,7 +44,7 @@ export AZURE_INFRA_NAME=<nameseed>
 # and you need to make sure it is available first by running nslookup ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
 export AZURE_DNS_LABEL=<dns short name>
 # a valid email address that is required by LetsEncrypt in order to provide a staging certificate
-AZURE_EMAIL_ADDRESS=<email address>
+export AZURE_EMAIL_ADDRESS=<email address>
 azd up
 ```
 
