@@ -6,6 +6,18 @@ if [[ ! -z "$CI" ]]; then
    exit
 fi
 
+AZURE_KUBERNETES_SERVICE_RBAC_CLUSTER_ADMIN='b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b'
+SIGNED_IN_USER=$(az ad signed-in-user show --query id -o tsv)
+echo "Found AKS Resource ID ${AZURE_AKS_RESOURCE_ID}"
+
+if [[ -z "${SIGNED_IN_USER}" ]]; then
+   echo "Signed in user not found.  Skipping AZURE_KUBERNETES_SERVICE_RBAC_CLUSTER_ADMIN role assignment."
+   exit
+fi
+
+az role assignment create --role ${AZURE_KUBERNETES_SERVICE_RBAC_CLUSTER_ADMIN} \
+   --assignee-object-id ${SIGNED_IN_USER} --assignee-principal-type User --scope ${AZURE_AKS_RESOURCE_ID}
+
 if [[ -z "${AZURE_DNS_LABEL}" ]]; then
    read -p "Please provide dns label for application (this will be prepended to .${AZURE_LOCATION}.cloudapp.azure.com):" AZURE_DNS_LABEL
    if [[ ${AZURE_DNS_LABEL} == *"."* ]]; then
