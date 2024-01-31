@@ -8,17 +8,18 @@ hooks:
     interactive: true
     run: ./hooks/preprovision.sh
   postprovision:
-    run: ./hooks/postprovision.sh
     interactive: true
+    run: ./hooks/postprovision.sh
   predeploy:
     interactive: true
     run: ./hooks/predeploy.sh
   postdeploy:
+    interactive: true
     run: ./hooks/postdeploy.sh
   predown:
     run: ./hooks/predown.sh
-  postdown:
-    run: ./hooks/postdown.sh
+      #  postdown:
+      #    run: ./hooks/postdown.sh
 services:
   api:
     project: ./src/api
@@ -37,7 +38,7 @@ services:
     host: aks
     k8s:
       deploymentPath: ../manifests/web
-    hooks:
-      postdeploy:
-        shell: sh
-        run: azd env set REACT_APP_WEB_BASE_URL ${SERVICE_WEB_ENDPOINT_URL}        
+  #  hooks:
+  #      postdeploy:
+  #      shell: sh
+  #      run: azd env set REACT_APP_WEB_BASE_URL ${SERVICE_WEB_ENDPOINT_URL}        

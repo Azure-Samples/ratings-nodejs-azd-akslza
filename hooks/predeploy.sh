@@ -13,13 +13,13 @@ if [[ -z "${AZURE_DNS_LABEL}" ]]; then
       echo "Exiting"
       exit
    fi
-   azd env set AZURE_DNS_LABEL ${AZURE_DNS_LABEL}
 fi
+azd env set AZURE_DNS_LABEL ${AZURE_DNS_LABEL}
 
 if [[ -z "${AZURE_EMAIL_ADDRESS}" ]]; then
    read -p "Please provide an email address to register for a certificate with LetsEncrypt:" AZURE_EMAIL_ADDRESS
-   azd env set AZURE_EMAIL_ADDRESS ${AZURE_EMAIL_ADDRESS}
 fi
+azd env set AZURE_EMAIL_ADDRESS ${AZURE_EMAIL_ADDRESS}
 
 
 az acr import --name ${AZURE_CONTAINER_REGISTRY} --source docker.io/bitnami/mongodb:5.0.14-debian-11-r9 \
