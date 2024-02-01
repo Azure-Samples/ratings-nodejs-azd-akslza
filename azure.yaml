@@ -7,9 +7,6 @@ hooks:
   preprovision:
     interactive: true
     run: ./hooks/preprovision.sh
-#  postprovision:
-#   interactive: true
-#   run: ./hooks/postprovision.sh
   predeploy:
     interactive: true
     run: ./hooks/predeploy.sh
@@ -18,8 +15,6 @@ hooks:
     run: ./hooks/postdeploy.sh
   predown:
     run: ./hooks/predown.sh
-      #  postdown:
-      #    run: ./hooks/postdown.sh
 services:
   api:
     project: ./src/api
