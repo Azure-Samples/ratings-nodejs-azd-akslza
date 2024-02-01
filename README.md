@@ -33,6 +33,9 @@ Variables should either be in the environment or added to the .azure/${AZURE_ENV
 
 git clone this repo, cd into the repo directory and then run the following commands
 ```
+git clone https://github.com/Azure-Samples/ratings-nodejs-azd-akslza.git
+cd ratings-nodejs-azd-akslza
+
 unset KUBECONFIG
 git submodule init 
 git submodule update
@@ -41,11 +44,14 @@ azd init
 # the AZURE_INFRA_NAME is the seed for azure resources (ie - ${AZURE_INFRA_NAME}-rg or aks-${AZURE_INFRA_NAME}
 export AZURE_INFRA_NAME=<nameseed>
 # the AZURE_DNS_LABEL is the short name for the app that is prepended to ${AZURE_LOCATION}.cloudapp.azure.com 
-# and you need to make sure it is available first by running nslookup ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
-export AZURE_DNS_LABEL=<dns short name>
+# and you need to make sure it is available first by running and nslookup 
+export AZURE_DNS_LABEL=myshortdnsname
+# make sure to look it up and that it does NOT exist
+nslookup ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
 # a valid email address that is required by LetsEncrypt in order to provide a staging certificate
-export AZURE_EMAIL_ADDRESS=<email address>
-azd up
+export AZURE_EMAIL_ADDRESS='myemail@mycompany.com'
+azd provision
+azd deploy
 ```
 
 Now wait a few minutes for the ingress and dns to establish and then open up a web browser to the external url provided from the last step

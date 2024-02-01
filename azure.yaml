@@ -7,6 +7,9 @@ hooks:
   preprovision:
     interactive: true
     run: ./hooks/preprovision.sh
+  postprovision:
+    interactive: true
+    run: ./hooks/postprovision.sh
   predeploy:
     interactive: true
     run: ./hooks/predeploy.sh

@@ -26,6 +26,7 @@ fi
 echo "PIP for Azure App Gateway found: ${PIP_NAME}.  Preparing to assign dns label ${AZURE_DNS_LABEL}."
 
 az network public-ip update -g ${AZURE_RESOURCE_GROUP} -n $PIP_NAME --dns-name ${AZURE_DNS_LABEL}
+sleep 60
 
 echo "==================================================================================="
 echo "===  Please was a few minutes for the new fqdn to propogate through dns and then "
