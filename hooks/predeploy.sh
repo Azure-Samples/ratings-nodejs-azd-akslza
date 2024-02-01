@@ -17,6 +17,13 @@ fi
 
 az role assignment create --role ${AZURE_KUBERNETES_SERVICE_RBAC_CLUSTER_ADMIN} \
    --assignee-object-id ${SIGNED_IN_USER} --assignee-principal-type User --scope ${AZURE_AKS_RESOURCE_ID}
+#make sure to sleep for a bit after assignment
+sleep 60
+
+az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --file=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
+az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_AKS_CLUSTER_NAME} --context ${AZURE_AKS_CLUSTER_NAME} --overwrite-existing --admin
+azd env set KUBECONFIG ${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
+export KUBECONFIG=${HOME}/.kube/${AZURE_AKS_CLUSTER_NAME}
 
 if [[ -z "${AZURE_DNS_LABEL}" ]]; then
    read -p "Please provide dns label for application (this will be prepended to .${AZURE_LOCATION}.cloudapp.azure.com):" AZURE_DNS_LABEL
