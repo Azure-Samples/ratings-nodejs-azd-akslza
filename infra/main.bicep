@@ -10,6 +10,11 @@ param name string
 @description('Primary location for all resources')
 param location string
 
+// cq added
+@minLength(1)
+@description('Signed In User')
+param signedinuser string
+
 //var resourceToken = '${name}-${toLower(uniqueString(subscription().id, name, location))}'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
@@ -24,7 +29,8 @@ module resources 'resources.bicep' = {
   scope: resourceGroup
   name: 'resources-${name}'
   params: {
-    signedinuser: ''
+//    signedinuser: ''
+    signedinuser: signedinuser
     location: location
     nameseed: name
   }
