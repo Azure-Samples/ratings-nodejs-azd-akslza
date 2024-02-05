@@ -10,7 +10,8 @@ export NAMESPACE=ratingsapp
 
 docker rmi ${SERVICE_API_IMAGE_NAME}
 docker rmi ${SERVICE_WEB_IMAGE_NAME}
-
+# wait for the ip to come up
+sleep 60
 INGRESS_IP=$(kubectl get ingress -n ${NAMESPACE} ratings-web-https -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 if [[ -z $INGRESS_IP ]];then
    echo "Error, no ingress ip assigned to ingress ${NAMESPACE} ratings-web-https.  Exiting."
