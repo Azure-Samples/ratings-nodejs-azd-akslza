@@ -50,8 +50,7 @@ export AZURE_DNS_LABEL=myshortdnsname
 nslookup ${AZURE_DNS_LABEL}.${AZURE_LOCATION}.cloudapp.azure.com
 # a valid email address that is required by LetsEncrypt in order to provide a staging certificate
 export AZURE_EMAIL_ADDRESS='myemail@mycompany.com'
-azd provision
-azd deploy
+azd up
 ```
 
 Now wait a few minutes for the ingress and dns to establish and then open up a web browser to the external url provided from the last step
