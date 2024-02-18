@@ -83,6 +83,8 @@ jobs:
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'latest'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
