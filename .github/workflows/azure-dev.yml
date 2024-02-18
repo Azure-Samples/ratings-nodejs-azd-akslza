@@ -86,7 +86,7 @@ jobs:
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
-          AZURE_SIGNED_IN_USER: ''
+          # AZURE_SIGNED_IN_USER: ''
 
       #############################################################################
       # set up kubectl
@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: |
           . .azure/${{ vars.AZURE_ENV_NAME }}/.env
-          echo "AZURE_SIGNED_IN_USER=''" >> $GITHUB_ENV
+          #echo "AZURE_SIGNED_IN_USER=''" >> $GITHUB_ENV
           echo "AZURE_AKS_CLUSTER_NAME=${AZURE_AKS_CLUSTER_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_GATEWAY_NAME=${AZURE_APP_GATEWAY_NAME}" >> $GITHUB_ENV
           echo "AZURE_APP_MSI=${AZURE_APP_MSI}" >> $GITHUB_ENV

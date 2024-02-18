@@ -13,9 +13,6 @@
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
-    },
-    "signedinuser": {
-      "value": "${AZURE_SIGNED_IN_USER}"
     }
   }
 }

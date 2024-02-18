@@ -29,8 +29,8 @@ module resources 'resources.bicep' = {
   scope: resourceGroup
   name: 'resources-${name}'
   params: {
-//    signedinuser: ''
-    signedinuser: signedinuser
+    signedinuser: ''
+//    signedinuser: signedinuser
     location: location
     nameseed: name
   }
