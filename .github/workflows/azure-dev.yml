@@ -81,7 +81,9 @@ jobs:
 
       - name: Pull in kubelogin
         uses: azure/use-kubelogin@v1
-        
+        with:
+          kubelogin-version: 'latest'
+
       - name: Provision Infrastructure
         run: azd provision --no-prompt
         env:
