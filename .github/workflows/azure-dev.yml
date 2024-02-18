@@ -86,7 +86,7 @@ jobs:
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
-          AZURE_SIGNED_IN_USER: 'FAKESIGNEDINUSER'
+          signedinuser: 'FAKESIGNEDINUSER'
 
       #############################################################################
       # set up kubectl
