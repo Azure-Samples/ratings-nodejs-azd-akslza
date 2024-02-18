@@ -53,7 +53,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        submodules: recursive
+        with:
+          submodules: 'recursive'
 
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
