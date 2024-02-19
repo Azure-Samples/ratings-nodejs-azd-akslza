@@ -18,6 +18,11 @@ on:
         required: true
         type: string
         default: 'akscqtst01'
+      AZURE_EMAIL_ADDRESS:
+        description: 'Email address used for registering certificate'
+        required: true
+        type: string
+        default: 'carmodyquinn@microsoft.com'
 
 
 #   push:
@@ -50,6 +55,7 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_EMAIL_ADDRESS: ${{ vars.AZURE_EMAIL_ADDRESS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -87,12 +93,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Provision Infrastructure
-        run: azd provision --no-prompt
+        run: azd provision --no-prompt --debug
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+          AZURE_EMAIL_ADDRESS: ${{ vars.AZURE_EMAIL_ADDRESS }}
 
       #############################################################################
       # set up kubectl
