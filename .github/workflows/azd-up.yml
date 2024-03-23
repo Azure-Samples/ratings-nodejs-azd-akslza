@@ -18,6 +18,11 @@ on:
         required: true
         type: string
         default: 'akscqtst01'
+      AZURE_EMAIL_ADDRESS:
+        description: 'Email address used for registering certificate'
+        required: true
+        type: string
+        default: 'carmodyquinn@microsoft.com'
 
 
 #   push:
@@ -42,8 +47,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      # image: mcr.microsoft.com/azure-dev-cli-apps:latest
-      image: azdevcliextacr.azurecr.io/azure-dev:pr-2488
+      image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
@@ -51,9 +55,12 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_EMAIL_ADDRESS: ${{ vars.AZURE_EMAIL_ADDRESS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
@@ -78,13 +85,21 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Pull in kubelogin
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'latest'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Provision Infrastructure
-        run: azd provision --no-prompt
+        run: azd provision --no-prompt --debug
         env:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
+          AZURE_EMAIL_ADDRESS: ${{ vars.AZURE_EMAIL_ADDRESS }}
 
       #############################################################################
       # set up kubectl

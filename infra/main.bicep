@@ -29,12 +29,14 @@ module resources 'resources.bicep' = {
   scope: resourceGroup
   name: 'resources-${name}'
   params: {
-//    signedinuser: ''
     signedinuser: signedinuser
     location: location
     nameseed: name
   }
 }
+//    signedinuser: signedinuser
+
+
 // output APP_WEB_BASE_URL string = serviceBusApp.outputs.ApplicationUrl
 // output APPINSIGHTS_INSTRUMENTATIONKEY string = serviceBusApp.outputs.APPINSIGHTS_INSTRUMENTATIONKEY
 // output APPINSIGHTS_CONNECTION_STRING string = serviceBusApp.outputs.APPINSIGHTS_CONNECTION_STRING
