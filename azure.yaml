@@ -4,20 +4,20 @@ name: ratingsapp
 metadata:
   template: LZA-ratingsapp@0.0.1-beta
 hooks:
-  preprovision:
-    interactive: true
-    run: ./hooks/preprovision.sh
-  postprovision:
-    interactive: true
-    run: ./hooks/postprovision.sh
+  # preprovision:
+  #   interactive: true
+  #   run: ./hooks/preprovision.sh
+  # postprovision:
+  #   interactive: true
+  #   run: ./hooks/postprovision.sh
   predeploy:
     interactive: true
     run: ./hooks/predeploy.sh
   postdeploy:
     interactive: true
     run: ./hooks/postdeploy.sh
-  predown:
-    run: ./hooks/predown.sh
+  # predown:
+  #   run: ./hooks/predown.sh
 services:
   api:
     project: ./src/api
