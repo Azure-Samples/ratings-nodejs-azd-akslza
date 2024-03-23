@@ -41,6 +41,8 @@ git submodule init
 git submodule update
 azd auth login
 azd init
+# provid the id of the user for proper permissions on the cluster
+AZURE_SIGNED_IN_USER=$(az ad signed-in-user show --query id -o tsv)
 # the AZURE_INFRA_NAME is the seed for azure resources (ie - ${AZURE_INFRA_NAME}-rg or aks-${AZURE_INFRA_NAME}
 export AZURE_INFRA_NAME=<nameseed>
 # the AZURE_DNS_LABEL is the short name for the app that is prepended to ${AZURE_LOCATION}.cloudapp.azure.com 

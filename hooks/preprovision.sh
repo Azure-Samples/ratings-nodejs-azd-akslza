@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Starting preprovision hook"
 # check to see if this is running as github action
 if [[ ! -z "$CI" ]]; then
    echo "Running on github, skipping predeploy hook. Exiting."
@@ -23,3 +24,5 @@ if [[ -z "${AZURE_SIGNED_IN_USER}" ]]; then
 fi
 azd env set AZURE_SIGNED_IN_USER ${AZURE_SIGNED_IN_USER}
 
+
+echo "Completed preprovision hook"

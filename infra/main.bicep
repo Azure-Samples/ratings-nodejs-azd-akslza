@@ -11,9 +11,9 @@ param name string
 param location string
 
 // cq added
-// @minLength(1)
-// @description('Signed In User')
-// param signedinuser string
+@minLength(1)
+@description('Signed In User')
+param signedinuser string
 
 //var resourceToken = '${name}-${toLower(uniqueString(subscription().id, name, location))}'
 
@@ -29,7 +29,7 @@ module resources 'resources.bicep' = {
   scope: resourceGroup
   name: 'resources-${name}'
   params: {
-    signedinuser: ''
+    signedinuser: signedinuser
     location: location
     nameseed: name
   }
