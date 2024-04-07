@@ -65,6 +65,7 @@ jobs:
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
+          echo "AZURE_SIGNED_IN_USER=$Env:AZURE_CLIENT_ID" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
           azd auth login `
             --client-id "$Env:AZURE_CLIENT_ID" `
             --federated-credential-provider "github" `
@@ -76,7 +77,7 @@ jobs:
         run: |
           $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
           Write-Host "::add-mask::$($info.clientSecret)"
-
+          echo "AZURE_SIGNED_IN_USER=$($info.clientId)" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
           azd auth login `
             --client-id "$($info.clientId)" `
             --client-secret "$($info.clientSecret)" `
@@ -100,7 +101,8 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           AZURE_INFRA_NAME: ${{ inputs.AZURE_INFRA_NAME }}
           AZURE_EMAIL_ADDRESS: ${{ inputs.AZURE_EMAIL_ADDRESS }}
-          
+          AZURE_SIGNED_IN_USER: ${{ env.AZURE_SIGNED_IN_USER }}
+
 
       #############################################################################
       # set up kubectl
