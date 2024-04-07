@@ -98,8 +98,8 @@ jobs:
           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
           AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          AZURE_INFRA_NAME: ${{ vars.AZURE_INFRA_NAME }}
-          AZURE_EMAIL_ADDRESS: ${{ vars.AZURE_EMAIL_ADDRESS }}
+          AZURE_INFRA_NAME: ${{ inputs.AZURE_INFRA_NAME }}
+          AZURE_EMAIL_ADDRESS: ${{ inputs.AZURE_EMAIL_ADDRESS }}
 
       #############################################################################
       # set up kubectl
