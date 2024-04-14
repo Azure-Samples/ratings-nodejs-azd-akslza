@@ -14,6 +14,9 @@ param location string
 @minLength(1)
 @description('Signed In User')
 param signedinuser string
+@minLength(1)
+@description('AutoDeployment')
+param automatedDeployment string
 
 //var resourceToken = '${name}-${toLower(uniqueString(subscription().id, name, location))}'
 
@@ -30,6 +33,7 @@ module resources 'resources.bicep' = {
   name: 'resources-${name}'
   params: {
     signedinuser: signedinuser
+    automatedDeployment: automatedDeployment
     location: location
     nameseed: name
   }

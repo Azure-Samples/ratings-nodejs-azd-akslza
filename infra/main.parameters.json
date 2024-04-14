@@ -13,6 +13,9 @@
     },
     "signedinuser": {
       "value": "${AZURE_SIGNED_IN_USER}"
+    },
+    "automatedDeployment": {
+      "value": "${AZURE_AUTO_DEPLOYMENT}"
     }
   }
 }
