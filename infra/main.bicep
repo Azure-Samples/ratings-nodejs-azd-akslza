@@ -14,9 +14,9 @@ param location string
 @minLength(1)
 @description('Signed In User')
 param signedinuser string
-@minLength(1)
-@description('AutoDeployment')
-param automatedDeployment string
+
+@description('Automated Deployment for using a Service Principal instead of signedInUser')
+param automatedDeployment bool
 
 //var resourceToken = '${name}-${toLower(uniqueString(subscription().id, name, location))}'
 
@@ -38,7 +38,7 @@ module resources 'resources.bicep' = {
     nameseed: name
   }
 }
-//    signedinuser: signedinuser
+
 
 
 // output APP_WEB_BASE_URL string = serviceBusApp.outputs.ApplicationUrl

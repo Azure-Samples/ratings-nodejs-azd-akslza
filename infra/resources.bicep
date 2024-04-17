@@ -1,6 +1,7 @@
 param nameseed string = 'superapp'
 param location string = resourceGroup().location
 param signedinuser string
+param automatedDeployment bool = false
 
 //---------Kubernetes Construction---------
 module aksconst 'core/bicep/main.bicep' = {
