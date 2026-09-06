@@ -50,7 +50,7 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
@@ -108,14 +108,14 @@ jobs:
 
       - name: Azure login
         id: login
-        uses: azure/login@v1
+        uses: azure/login@cb79c773a3cfa27f31f25eb3f677781210c9ce3d # v1.6.1
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       - name: Setup kubectl
         id: install-kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 # v3.2
       - name: Kubelogin
         env:
           kubeloginversion: 'v0.0.28'
@@ -129,14 +129,14 @@ jobs:
           kubelogin convert-kubeconfig -l azurecli
       - name: Set AKS context
         id: set-context
-        uses: azure/aks-set-context@v3
+        uses: azure/aks-set-context@4edaee69f820359371ee8bc85189ac03a21d3a58 # v3.2
         with:
           resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
           cluster-name: ${{ env.AZURE_AKS_CLUSTER_NAME }}
   
       - name: Deploy Mongo to AKS
         id: deploy-aks-mongo
-        uses: Azure/k8s-deploy@v4
+        uses: Azure/k8s-deploy@1082a9290dd683dfe1d60582f418a27684e3a391 # v4.10
         with:
           namespace: 'ratingsapp'
           manifests: |
@@ -145,7 +145,7 @@ jobs:
           pull-images: false 
       - name: Deploy Cert Manager to AKS
         id: deploy-aks-cert-manager
-        uses: Azure/k8s-deploy@v4
+        uses: Azure/k8s-deploy@1082a9290dd683dfe1d60582f418a27684e3a391 # v4.10
         with:
           manifests: |
              ./src/manifests/cert-manager/cert-manager.yaml
