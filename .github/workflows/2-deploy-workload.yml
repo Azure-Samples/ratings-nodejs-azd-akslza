@@ -141,7 +141,7 @@ jobs:
                az acr agentpool delete -n ${{ env.AGENT_POOL_NAME }} -r ${{ env.ACR_NAME }} --yes
 
       - name: Checkout YAML
-        uses: actions/checkout@main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
           
       - name: Edit local copy of YAML for Internal Deployment
         if: ${{ env.azureKeyvaultSecretsProviderUserAssignedManagedIdentityClientId != '' && env.ACR_NAME != '' && env.KEYVAULT_NAME != '' && env.AZURE_TENANT_ID != '' && env.EMAIL != '' }}
